@@ -1,77 +1,85 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
 import app.aakyol.weasleymessenger.R;
+import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.service.LocationService;
 
 public class ActivityListRecipients extends AppCompatActivity {
 
-    private final String LOG_TAG_LOCATION = "LocationService";
-
     private Intent locationServiceIntent;
+    private View activityViewObject;
+    private Activity listRecipientActivity;
+    private Context listRecipientActivityContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_recipients);
 
-        locationServiceIntent = new Intent(this, LocationService.class);
+        listRecipientActivity = this;
+        listRecipientActivityContent = this;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        activityViewObject = findViewById(android.R.id.content);
+        locationServiceIntent = new Intent(this, LocationService.class);
+        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContent)) {
+            Snackbar.make(activityViewObject,
+                    "Permission checks failed. " +
+                            "Please restart the application and allow the permissions to be taken.",
+                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+        else {
+            startService(locationServiceIntent);
+        }
 
         Button locationRefreshButton = (Button) findViewById(R.id.location_refresh_button);
         locationRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Start reading the location if the permission succeeds
-                if(checkIfLocationPermissionGranted()) {
-                    startService(locationServiceIntent);
-                }
-                else {
-                    Snackbar.make(view,
-                            "Permission failed to acquire for location services. Please restart the application.",
-                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+            }
+        });
+
+        Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
+        addRecipientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    /*if(checkIfSMSPermissionGranted()) {
+                        sendSMS("00905360579876", "Abi Kadıköy Bambi'ye geldim.");
+                    }*/
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean checkIfLocationPermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(LOG_TAG_LOCATION,"Permission is granted");
-                return true;
-            } else {
-
-                Log.v(LOG_TAG_LOCATION,"Permission is revoked");
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(LOG_TAG_LOCATION,"Permission is granted");
-            return true;
-        }
+    public static void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
+
+    public static void requestSendSMSPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
+    }
+
+    /*private void sendSMS(String phoneNumber, String message) {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
