@@ -2,7 +2,9 @@ package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -35,15 +37,8 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         activityViewObject = findViewById(android.R.id.content);
         locationServiceIntent = new Intent(this, LocationService.class);
-        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContent)) {
-            Snackbar.make(activityViewObject,
-                    "Permission checks failed. " +
-                            "Please restart the application and allow the permissions to be taken.",
-                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        }
-        else {
-            startService(locationServiceIntent);
-        }
+
+        requestPermissions();
 
         Button locationRefreshButton = (Button) findViewById(R.id.location_refresh_button);
         locationRefreshButton.setOnClickListener(new View.OnClickListener() {
@@ -68,12 +63,40 @@ public class ActivityListRecipients extends AppCompatActivity {
         });
     }
 
-    public static void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.SEND_SMS
+        }, 1);
     }
 
-    public static void requestSendSMSPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        checkIfPermissionsGranted();
+    }
+
+    private void checkIfPermissionsGranted() {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        requestPermissions();
+                }
+            }
+        };
+
+        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContent)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Permissions are revoked. The application needs these permissions to" +
+                    "work properly. Would you like to allow the permissions?")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        }
+        else {
+            startService(locationServiceIntent);
+        }
     }
 
     /*private void sendSMS(String phoneNumber, String message) {

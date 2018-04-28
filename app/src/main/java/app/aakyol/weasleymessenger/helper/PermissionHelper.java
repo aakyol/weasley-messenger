@@ -37,7 +37,6 @@ public class PermissionHelper {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static boolean checkIfLocationPermissionGranted(final Activity activity, final Context context) {
         if (Build.VERSION.SDK_INT >= 23) {
-            ActivityListRecipients.requestLocationPermission();
             if (checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 Log.d(AppConstants.HelperConstants.PermissionHelperConstant.LOG_TAG_LOCATIONPERMISSION,"Permission for location is granted");
@@ -61,8 +60,7 @@ public class PermissionHelper {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static boolean checkIfSMSPermissionGranted(final Activity activity, final Context context) {
         if (Build.VERSION.SDK_INT >= 23) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SEND_SMS}, 1);
-            if (checkSelfPermission(context, Manifest.permission.SEND_SMS)
+            if (checkSelfPermission(context, android.Manifest.permission.SEND_SMS)
                     == PackageManager.PERMISSION_GRANTED) {
                 Log.d(AppConstants.HelperConstants.PermissionHelperConstant.LOG_TAG_SMSPERMISSION,"Permission for SMS sending is granted");
                 return true;
