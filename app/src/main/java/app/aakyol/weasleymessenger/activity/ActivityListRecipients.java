@@ -52,9 +52,7 @@ public class ActivityListRecipients extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    /*if(checkIfSMSPermissionGranted()) {
-                        sendSMS("00905360579876", "Abi Kadıköy Bambi'ye geldim.");
-                    }*/
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,10 +102,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         }
     }
 
-    /*private void sendSMS(String phoneNumber, String message) {
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, null, null);
-    }*/
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
