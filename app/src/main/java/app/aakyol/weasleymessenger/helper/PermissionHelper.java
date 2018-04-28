@@ -1,15 +1,12 @@
 package app.aakyol.weasleymessenger.helper;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import app.aakyol.weasleymessenger.activity.ActivityListRecipients;
 import app.aakyol.weasleymessenger.constants.AppConstants;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
@@ -47,7 +44,7 @@ public class PermissionHelper {
                 return false;
             }
         }
-        else { //permission is automatically granted on sdk<23 upon installation
+        else { // On API < 23, the permissions are informed to the user during installation
             Log.d(AppConstants.HelperConstants.PermissionHelperConstant.LOG_TAG_LOCATIONPERMISSION,"Permission for location is granted");
             return true;
         }
@@ -70,7 +67,7 @@ public class PermissionHelper {
                 return false;
             }
         }
-        else { //permission is automatically granted on sdk<23 upon installation
+        else { // On API < 23, the permissions are informed to the user during installation
             Log.d(AppConstants.HelperConstants.PermissionHelperConstant.LOG_TAG_SMSPERMISSION,"Permission for SMS sending is granted");
             return true;
         }
