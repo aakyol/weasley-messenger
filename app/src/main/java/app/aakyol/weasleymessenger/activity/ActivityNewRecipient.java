@@ -1,8 +1,17 @@
 package app.aakyol.weasleymessenger.activity;
 
-/**
- * Created by aakyo on 31/03/2018.
- */
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
-public class ActivityNewRecipient {
+import app.aakyol.weasleymessenger.R;
+
+public class ActivityNewRecipient extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_new_recipient);
+    }
+
 }

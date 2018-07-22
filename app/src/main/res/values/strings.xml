@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Weasley Messenger</string>
     <string name="action_settings">Settings</string>
+    <string name="full_name">Full Name</string>
+    <string name="message_to_be_sent">Message To Be Sent</string>
+    <string name="phone_number">Phone Number</string>
 </resources>

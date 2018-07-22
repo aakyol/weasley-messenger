@@ -51,11 +51,8 @@ public class ActivityListRecipients extends AppCompatActivity {
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Intent newRecipientIntent = new Intent(listRecipientActivityContent, ActivityNewRecipient.class);
+                listRecipientActivity.startActivity(newRecipientIntent);
             }
         });
     }
