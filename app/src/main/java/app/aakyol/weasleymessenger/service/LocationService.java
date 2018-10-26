@@ -5,14 +5,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationCallback;
@@ -22,6 +17,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.constants.AppConstants;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;

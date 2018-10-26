@@ -7,14 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.service.LocationService;
@@ -79,10 +78,10 @@ public class ActivityListRecipients extends AppCompatActivity {
                         requestPermissions();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
-                        Snackbar.make(activityViewObject,
+                        /*Snackbar.make(activityViewObject,
                                 "Permission checks failed. The application will no longer" +
                                         "behave as expected. Please restart the application.",
-                                Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
                 }
             }
         };

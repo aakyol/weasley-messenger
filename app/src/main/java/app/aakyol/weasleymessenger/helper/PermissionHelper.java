@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import app.aakyol.weasleymessenger.constants.AppConstants;
 
-import static android.support.v4.content.ContextCompat.checkSelfPermission;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
 
 /**
  * Created by aakyo on 31/03/2018.
