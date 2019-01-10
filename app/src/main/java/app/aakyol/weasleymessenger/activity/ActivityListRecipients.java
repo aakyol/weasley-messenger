@@ -6,15 +6,25 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.google.android.gms.location.LocationResult;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.R;
+import app.aakyol.weasleymessenger.constants.AppResources;
+import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.service.LocationService;
 
@@ -30,6 +40,16 @@ public class ActivityListRecipients extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_recipients);
 
+        DBHelper mDbHelper = new DBHelper(this);
+        String[] colmuns = {
+                BaseColumns._ID,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION
+        };
+        Cursor query = mDbHelper.getReadableDatabase().query(DBHelper.DBEntry.TABLE_NAME,colmuns,null,null,null,null,null);
+
         listRecipientActivity = this;
         listRecipientActivityContent = this;
 
@@ -42,7 +62,19 @@ public class ActivityListRecipients extends AppCompatActivity {
         locationRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                LocationResult currentLocation = AppResources.currentLocation;
+                if(Objects.nonNull(currentLocation)) {
+                    Snackbar.make(activityViewObject,
+                            "Current latitude and longitude: " +
+                                    AppResources.currentLocation.getLastLocation().getLatitude()
+                                    + ", " + AppResources.currentLocation.getLastLocation().getLongitude(),
+                            BaseTransientBottomBar.LENGTH_LONG).setAction("Location: ", null).show();
+                }
+                else {
+                    Snackbar.make(activityViewObject,
+                            "Location is not ready...",
+                            BaseTransientBottomBar.LENGTH_LONG).setAction("Location: ", null).show();
+                }
             }
         });
 
@@ -58,8 +90,7 @@ public class ActivityListRecipients extends AppCompatActivity {
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.SEND_SMS
+                Manifest.permission.ACCESS_FINE_LOCATION
         }, 1);
     }
 
@@ -78,10 +109,10 @@ public class ActivityListRecipients extends AppCompatActivity {
                         requestPermissions();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
-                        /*Snackbar.make(activityViewObject,
+                        Snackbar.make(activityViewObject,
                                 "Permission checks failed. The application will no longer" +
                                         "behave as expected. Please restart the application.",
-                                Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
+                                BaseTransientBottomBar.LENGTH_LONG).setAction("Action", null).show();
                 }
             }
         };

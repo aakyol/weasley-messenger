@@ -19,7 +19,7 @@ import com.google.android.gms.location.SettingsClient;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import app.aakyol.weasleymessenger.constants.AppConstants;
+import app.aakyol.weasleymessenger.constants.AppResources;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -76,7 +76,8 @@ public class LocationService extends Service {
                 getFusedLocationProviderClient(locationServiceContext).requestLocationUpdates(locationRequest, new LocationCallback() {
                             @Override
                             public void onLocationResult(LocationResult locationResult) {
-                                Log.d(AppConstants.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"Location fetched: " + locationResult.getLastLocation());
+                                Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"Location fetched: " + locationResult.getLastLocation());
+                                AppResources.currentLocation = locationResult;
                             }
                         },
                         Looper.myLooper());

@@ -17,13 +17,13 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/repicipent_name"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/full_name"
+            android:text="@string/recipient_name"
             app:layout_constraintEnd_toStartOf="@+id/editText"
             app:layout_constraintHorizontal_bias="0.072"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +47,8 @@
         android:layout_height="50dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout1"
-        tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:id="@+id/textView2"
@@ -78,11 +78,10 @@
         android:id="@+id/constraintLayout3"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="@id/constraintLayout2"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
-        tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:id="@+id/textView3"
@@ -112,21 +111,21 @@
         android:id="@+id/constraintLayout4"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="72dp"
         app:layout_constraintBottom_toBottomOf="@id/constraintLayout3"
-        app:layout_constraintBottom_toTopOf="@+id/send_button"
-        tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintBottom_toTopOf="@+id/save_button"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
             android:text="@string/location_label"
             app:layout_constraintEnd_toStartOf="@+id/location_button"
-            app:layout_constraintHorizontal_bias="0.109"
+            app:layout_constraintHorizontal_bias="0.16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -143,16 +142,32 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/send_button"
+        android:id="@+id/save_button"
         android:layout_width="308dp"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="132dp"
         android:text="@string/save_recipient_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/back_button_recipient"
+        android:layout_width="308dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/back_recipient_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/save_button"
+        app:layout_constraintVertical_bias="0.267" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

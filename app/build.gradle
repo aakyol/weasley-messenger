@@ -24,6 +24,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
     implementation 'com.google.dagger:dagger:2.13'
+    implementation group: 'com.google.android.material', name: 'material', version: '1.0.0-alpha1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
     testImplementation 'junit:junit:4.12'
 }
