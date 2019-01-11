@@ -1,9 +1,13 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationResult;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -19,6 +23,8 @@ import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 
 public class ActivityNewRecipient extends AppCompatActivity {
+
+    private final Context activityContext = this;
 
     private LocationResult locationForRecipientMessage = null;
 
@@ -61,8 +67,16 @@ public class ActivityNewRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(Objects.nonNull(locationForRecipientMessage)) {
+                    SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
                     ContentValues values = new ContentValues();
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,findViewById(R.id.full));
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,((EditText) findViewById(R.id.recipient_name_input)).getText().toString());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,((EditText) findViewById(R.id.phone_number_input)).getText().toString());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION,locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
+                    db.insert(DBHelper.DATABASE_NAME, null, values);
+                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                            "Recipient \"" + ((EditText) findViewById(R.id.recipient_name_input)).getText().toString() + "\" is  saved.");
+                    finish();
                 }
                 else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),

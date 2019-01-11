@@ -31,7 +31,7 @@ import app.aakyol.weasleymessenger.service.LocationService;
 public class ActivityListRecipients extends AppCompatActivity {
 
     private Intent locationServiceIntent;
-    private View activityViewObject;
+    public static View activityViewObject;
     private Activity listRecipientActivity;
     private Context listRecipientActivityContent;
 
