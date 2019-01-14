@@ -6,9 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.constants.AppResources;
-import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.service.LocationService;
 
@@ -39,16 +36,6 @@ public class ActivityListRecipients extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_recipients);
-
-        DBHelper mDbHelper = new DBHelper(this);
-        String[] colmuns = {
-                BaseColumns._ID,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION
-        };
-        Cursor query = mDbHelper.getReadableDatabase().query(DBHelper.DBEntry.TABLE_NAME,colmuns,null,null,null,null,null);
 
         listRecipientActivity = this;
         listRecipientActivityContent = this;

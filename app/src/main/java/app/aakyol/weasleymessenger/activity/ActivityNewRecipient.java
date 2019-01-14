@@ -7,12 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gms.location.LocationResult;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
@@ -73,7 +71,8 @@ public class ActivityNewRecipient extends AppCompatActivity {
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,((EditText) findViewById(R.id.phone_number_input)).getText().toString());
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString());
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION,locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
-                    db.insert(DBHelper.DATABASE_NAME, null, values);
+                    db.insert(DBHelper.DBEntry.TABLE_NAME, null, values);
+                    db.close();
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.recipient_name_input)).getText().toString() + "\" is  saved.");
                     finish();
