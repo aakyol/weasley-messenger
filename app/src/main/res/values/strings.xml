@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Weasley Messenger</string>
+    <string name="recipient_activity_name">New Recipient</string>
     <string name="action_settings">Settings</string>
+    <string name="recipient_name">Name</string>
+    <string name="message_to_be_sent">Message To Be Sent</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="location_label">Get Location</string>
+    <string name="location_button">Fetch</string>
+    <string name="save_recipient_button">SAVE</string>
+    <string name="back_recipient_button">BACK</string>
 </resources>

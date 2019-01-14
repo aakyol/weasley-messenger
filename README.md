@@ -6,5 +6,5 @@ An app to have an automatic process that sends messages to pre-defined receivers
 # Why you started such a project?
 I am one of the victims of sending manual messages periodically. This is a good way to ease manual labour on my messaging activities.
 
-# Any problems? 
+# Any problems?
 Feel free to inform, will fix it ASAP.

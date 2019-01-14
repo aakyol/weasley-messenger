@@ -1,77 +1,122 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.google.android.gms.location.LocationResult;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.R;
+import app.aakyol.weasleymessenger.constants.AppResources;
+import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.service.LocationService;
 
 public class ActivityListRecipients extends AppCompatActivity {
 
-    private final String LOG_TAG_LOCATION = "LocationService";
-
     private Intent locationServiceIntent;
+    public static View activityViewObject;
+    private Activity listRecipientActivity;
+    private Context listRecipientActivityContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_recipients);
 
+        listRecipientActivity = this;
+        listRecipientActivityContent = this;
+
+        activityViewObject = findViewById(android.R.id.content);
         locationServiceIntent = new Intent(this, LocationService.class);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        requestPermissions();
 
         Button locationRefreshButton = (Button) findViewById(R.id.location_refresh_button);
         locationRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Start reading the location if the permission succeeds
-                if(checkIfLocationPermissionGranted()) {
-                    startService(locationServiceIntent);
+                LocationResult currentLocation = AppResources.currentLocation;
+                if(Objects.nonNull(currentLocation)) {
+                    Snackbar.make(activityViewObject,
+                            "Current latitude and longitude: " +
+                                    AppResources.currentLocation.getLastLocation().getLatitude()
+                                    + ", " + AppResources.currentLocation.getLastLocation().getLongitude(),
+                            BaseTransientBottomBar.LENGTH_LONG).setAction("Location: ", null).show();
                 }
                 else {
-                    Snackbar.make(view,
-                            "Permission failed to acquire for location services. Please restart the application.",
-                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Snackbar.make(activityViewObject,
+                            "Location is not ready...",
+                            BaseTransientBottomBar.LENGTH_LONG).setAction("Location: ", null).show();
                 }
+            }
+        });
+
+        Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
+        addRecipientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newRecipientIntent = new Intent(listRecipientActivityContent, ActivityNewRecipient.class);
+                listRecipientActivity.startActivity(newRecipientIntent);
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private boolean checkIfLocationPermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(LOG_TAG_LOCATION,"Permission is granted");
-                return true;
-            } else {
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, 1);
+    }
 
-                Log.v(LOG_TAG_LOCATION,"Permission is revoked");
-                return false;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        checkIfPermissionsGranted();
+    }
+
+    private void checkIfPermissionsGranted() {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        requestPermissions();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        Snackbar.make(activityViewObject,
+                                "Permission checks failed. The application will no longer" +
+                                        "behave as expected. Please restart the application.",
+                                BaseTransientBottomBar.LENGTH_LONG).setAction("Action", null).show();
+                }
             }
+        };
+
+        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContent)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Permissions are revoked. The application needs these permissions to" +
+                    "work properly. Would you like to allow the permissions?")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
         }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(LOG_TAG_LOCATION,"Permission is granted");
-            return true;
+        else {
+            startService(locationServiceIntent);
         }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
