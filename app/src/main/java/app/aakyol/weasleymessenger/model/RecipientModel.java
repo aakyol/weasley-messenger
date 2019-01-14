@@ -13,7 +13,7 @@ public class RecipientModel {
     private String lastName;
     private String phoneNumber;
     private String messageToBeSent;
-    private Location locationForRecipient;
+    private String locationForRecipient;
 
     public String getAliasName() {
         return aliasName;
@@ -47,11 +47,11 @@ public class RecipientModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public Location getLocationForRecipient() {
+    public String getLocationForRecipient() {
         return locationForRecipient;
     }
 
-    public void setLocationForRecipient(Location locationForRecipient) {
+    public void setLocationForRecipient(String locationForRecipient) {
         this.locationForRecipient = locationForRecipient;
     }
 

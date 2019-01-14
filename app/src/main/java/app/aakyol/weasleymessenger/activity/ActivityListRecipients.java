@@ -90,7 +90,9 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent editRecipientIntent = new Intent(listRecipientActivityContent, ActivityEditRecipient.class);
+                editRecipientIntent.putExtra(ActivityEditRecipient.RECIPIENT_ID, position + 1);
+                listRecipientActivity.startActivity(editRecipientIntent);
             }
         });
     }
