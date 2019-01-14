@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="2"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.9" />
-
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="2"
         android:orientation="horizontal"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/add_recipient_button"
@@ -23,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="ADD RECIPIENT"
-            app:srcCompat="@android:drawable/ic_dialog_email"/>
+            app:srcCompat="@android:drawable/ic_dialog_email" />
 
         <Button
             android:id="@+id/location_refresh_button"
@@ -31,8 +34,23 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="REFRESH LOCATION"
-            app:srcCompat="@android:drawable/ic_menu_mylocation"/>
+            app:srcCompat="@android:drawable/ic_menu_mylocation" />
 
     </LinearLayout>
 
-</LinearLayout>
+    <ListView
+        android:id="@+id/recipient_list"
+        android:layout_width="0dp"
+        android:layout_height="404dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

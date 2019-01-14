@@ -53,9 +53,8 @@ public class ActivityNewRecipient extends AppCompatActivity {
                                     + ", " + location.getLastLocation().getLongitude());
                 }
                 else {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "Location is not available at this time.",
-                            BaseTransientBottomBar.LENGTH_LONG).setAction("Location: ", null).show();
+                    SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
+                            "Location is not available at this time.");
                 }
             }
         });
