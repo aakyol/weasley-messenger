@@ -1,7 +1,9 @@
 package app.aakyol.weasleymessenger.activity;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -135,6 +137,38 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
                         "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString() + "\" is saved.");
                 finish();
+            }
+        });
+
+        final Button deleteRecipientButton = findViewById(R.id.edit_delete_button);
+        deleteRecipientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String recipientName = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                dialog.dismiss();
+                                SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
+                                ContentValues values = new ContentValues();
+                                db.delete(DBHelper.DBEntry.TABLE_NAME, DBHelper.DBEntry._ID + " = ?", new String[] {String.valueOf(recipientDBRowId)});
+                                db.close();
+                                SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                                        "Recipient \"" + recipientName + "\" is deleted.");
+                                finish();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
+                builder.setMessage("Are you sure to delete the recipient \"" + recipientName + "\" ?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
             }
         });
     }
