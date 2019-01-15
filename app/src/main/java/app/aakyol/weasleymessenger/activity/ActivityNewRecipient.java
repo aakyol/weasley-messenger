@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationResult;
 import java.util.Objects;
@@ -37,6 +38,9 @@ public class ActivityNewRecipient extends AppCompatActivity {
             }
         });
 
+        final TextView locationText = findViewById(R.id.location_current);
+        locationText.setText("");
+
         final Button fetchLocationButton = findViewById(R.id.location_button);
         fetchLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +52,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
                             "Fetched latitude and longitude: " +
                                     location.getLastLocation().getLatitude()
                                     + ", " + location.getLastLocation().getLongitude());
+                    locationText.setText("Current location on recipient: " + locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
                 }
                 else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),

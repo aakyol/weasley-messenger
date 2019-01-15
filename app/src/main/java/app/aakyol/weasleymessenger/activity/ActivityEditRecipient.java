@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.LocationResult;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
@@ -108,6 +106,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                             "Fetched latitude and longitude: " +
                                     location.getLastLocation().getLatitude()
                                     + ", " + location.getLastLocation().getLongitude());
+                    locationText.setText("Current location on recipient: " + locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
                 }
                 else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
