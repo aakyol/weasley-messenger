@@ -8,12 +8,21 @@ import android.location.Location;
 
 public class RecipientModel {
 
+    private int dbID;
     private String aliasName;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String messageToBeSent;
-    private Location locationForRecipient;
+    private String locationForRecipient;
+
+    public int getDbID() {
+        return dbID;
+    }
+
+    public void setDbID(int dbID) {
+        this.dbID = dbID;
+    }
 
     public String getAliasName() {
         return aliasName;
@@ -47,11 +56,11 @@ public class RecipientModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public Location getLocationForRecipient() {
+    public String getLocationForRecipient() {
         return locationForRecipient;
     }
 
-    public void setLocationForRecipient(Location locationForRecipient) {
+    public void setLocationForRecipient(String locationForRecipient) {
         this.locationForRecipient = locationForRecipient;
     }
 
@@ -61,6 +70,11 @@ public class RecipientModel {
 
     public void setMessageToBeSent(String messageToBeSent) {
         this.messageToBeSent = messageToBeSent;
+    }
+
+    @Override
+    public String toString() {
+        return this.aliasName;
     }
 
 }

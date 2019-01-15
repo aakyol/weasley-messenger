@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationResult;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
@@ -39,6 +38,9 @@ public class ActivityNewRecipient extends AppCompatActivity {
             }
         });
 
+        final TextView locationText = findViewById(R.id.location_current);
+        locationText.setText("");
+
         final Button fetchLocationButton = findViewById(R.id.location_button);
         fetchLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,11 +48,11 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 LocationResult location = AppResources.currentLocation;
                 if(Objects.nonNull(location)) {
                     locationForRecipientMessage = location;
-                    fetchLocationButton.setEnabled(false);
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "Fetched latitude and longitude: " +
                                     location.getLastLocation().getLatitude()
                                     + ", " + location.getLastLocation().getLongitude());
+                    locationText.setText("Current location on recipient: " + locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
                 }
                 else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),

@@ -32,6 +32,7 @@ import app.aakyol.weasleymessenger.constants.AppResources;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
+import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.service.LocationService;
 
 public class ActivityListRecipients extends AppCompatActivity {
@@ -90,7 +91,9 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent editRecipientIntent = new Intent(listRecipientActivityContent, ActivityEditRecipient.class);
+                editRecipientIntent.putExtra(ActivityEditRecipient.RECIPIENT_ID, ((RecipientModel) parent.getAdapter().getItem(position)).getDbID());
+                listRecipientActivity.startActivity(editRecipientIntent);
             }
         });
     }
@@ -111,7 +114,11 @@ public class ActivityListRecipients extends AppCompatActivity {
         super.onResume();
 
         String[] columns = {
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME
+                DBHelper.DBEntry._ID,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION
         };
 
         Cursor cursor = recipientDatabase.query(
@@ -125,16 +132,20 @@ public class ActivityListRecipients extends AppCompatActivity {
                 null
         );
 
-        List<String> itemNames = new ArrayList<>();
+        List<RecipientModel> recipients = new ArrayList<>();
         while(cursor.moveToNext()) {
-            String itemName = cursor.getString(
-                    cursor.getColumnIndexOrThrow(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME));
-            itemNames.add(itemName);
+            RecipientModel recipient = new RecipientModel();
+            recipient.setDbID(cursor.getInt(0));
+            recipient.setAliasName(cursor.getString(1));
+            recipient.setPhoneNumber(cursor.getString(2));
+            recipient.setMessageToBeSent(cursor.getString(3));
+            recipient.setLocationForRecipient(cursor.getString(4));
+            recipients.add(recipient);
         }
         cursor.close();
 
-       ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.activity_list_recipient_layout, itemNames);
+       ArrayAdapter adapter = new ArrayAdapter<RecipientModel>(this,
+                R.layout.activity_list_recipient_layout, recipients);
 
 
         listView.setAdapter(adapter);
