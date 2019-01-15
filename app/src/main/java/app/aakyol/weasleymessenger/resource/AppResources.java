@@ -1,6 +1,10 @@
-package app.aakyol.weasleymessenger.constants;
+package app.aakyol.weasleymessenger.resource;
 
 import com.google.android.gms.location.LocationResult;
+
+import java.util.List;
+
+import app.aakyol.weasleymessenger.model.RecipientModel;
 
 /**
  * Created by aakyo on 31/03/2018.
@@ -28,4 +32,5 @@ public class AppResources {
     }
 
     public static LocationResult currentLocation;
+    public static List<RecipientModel> currentRecipientList;
 }

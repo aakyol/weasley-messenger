@@ -17,22 +17,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.gms.location.LocationResult;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.R;
-import app.aakyol.weasleymessenger.constants.AppResources;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
+import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.service.LocationService;
 
 public class ActivityListRecipients extends AppCompatActivity {
@@ -62,23 +57,6 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         requestPermissions();
 
-        Button locationRefreshButton = (Button) findViewById(R.id.location_refresh_button);
-        locationRefreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocationResult currentLocation = AppResources.currentLocation;
-                if(Objects.nonNull(currentLocation)) {
-                    SnackbarHelper.printLongSnackbarMessage(activityViewObject,"Current latitude and longitude: " +
-                            AppResources.currentLocation.getLastLocation().getLatitude()
-                            + ", " + AppResources.currentLocation.getLastLocation().getLongitude());
-                }
-                else {
-                    SnackbarHelper.printLongSnackbarMessage(activityViewObject,
-                            "Location is not ready...");
-                }
-            }
-        });
-
         Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +78,8 @@ public class ActivityListRecipients extends AppCompatActivity {
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.SEND_SMS
         }, 1);
     }
 
@@ -144,7 +123,9 @@ public class ActivityListRecipients extends AppCompatActivity {
         }
         cursor.close();
 
-       ArrayAdapter adapter = new ArrayAdapter<RecipientModel>(this,
+        AppResources.currentRecipientList = recipients;
+
+        ArrayAdapter adapter = new ArrayAdapter<RecipientModel>(this,
                 R.layout.activity_list_recipient_layout, recipients);
 
 
@@ -152,7 +133,6 @@ public class ActivityListRecipients extends AppCompatActivity {
     }
 
     private void checkIfPermissionsGranted() {
-
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

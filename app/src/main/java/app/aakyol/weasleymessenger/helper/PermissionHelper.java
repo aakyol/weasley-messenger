@@ -7,7 +7,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-import app.aakyol.weasleymessenger.constants.AppResources;
+import app.aakyol.weasleymessenger.resource.AppResources;
 
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
 

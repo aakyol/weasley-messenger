@@ -17,9 +17,13 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
+import java.util.List;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import app.aakyol.weasleymessenger.constants.AppResources;
+import app.aakyol.weasleymessenger.helper.SMSHelper;
+import app.aakyol.weasleymessenger.model.RecipientModel;
+import app.aakyol.weasleymessenger.resource.AppResources;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -47,7 +51,7 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         locationServiceContext = this;
         startLocationUpdates();
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     private void startLocationUpdates() {
@@ -78,6 +82,13 @@ public class LocationService extends Service {
                             public void onLocationResult(LocationResult locationResult) {
                                 Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"Location fetched: " + locationResult.getLastLocation());
                                 AppResources.currentLocation = locationResult;
+                                final List<RecipientModel> recipients = AppResources.currentRecipientList;
+                                final String currentLocation = locationResult.getLastLocation().getLatitude() + ", " + locationResult.getLastLocation().getLongitude();
+                                for (RecipientModel recipient : recipients) {
+                                    if(currentLocation.equals(recipient.getLocationForRecipient())) {
+                                        SMSHelper.sendSMS(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
+                                    }
+                                }
                             }
                         },
                         Looper.myLooper());

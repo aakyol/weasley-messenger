@@ -101,7 +101,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         fetchLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationResult location = app.aakyol.weasleymessenger.constants.AppResources.currentLocation;
+                LocationResult location = app.aakyol.weasleymessenger.resource.AppResources.currentLocation;
                 if(Objects.nonNull(location)) {
                     locationForRecipientMessage = location;
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
