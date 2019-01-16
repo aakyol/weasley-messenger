@@ -97,7 +97,8 @@ public class ActivityListRecipients extends AppCompatActivity {
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE
         };
 
         Cursor cursor = recipientDatabase.query(
@@ -118,7 +119,8 @@ public class ActivityListRecipients extends AppCompatActivity {
             recipient.setAliasName(cursor.getString(1));
             recipient.setPhoneNumber(cursor.getString(2));
             recipient.setMessageToBeSent(cursor.getString(3));
-            recipient.setLocationForRecipient(cursor.getString(4));
+            recipient.setLatitude(cursor.getDouble(4));
+            recipient.setLongitude(cursor.getDouble(5));
             recipients.add(recipient);
         }
         cursor.close();

@@ -25,7 +25,7 @@ public class AppResources {
 
         public class PermissionHelperConstant {
 
-            public static final String LOG_TAG_LOCATIONPERMISSION = "Permission: Location:";
+            public static final String LOG_TAG_PERMISSION = "Permission";
 
         }
 

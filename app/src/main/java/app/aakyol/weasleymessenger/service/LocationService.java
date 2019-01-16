@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -25,6 +26,7 @@ import app.aakyol.weasleymessenger.helper.SMSHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
 
+import static app.aakyol.weasleymessenger.resource.AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 /**
@@ -35,8 +37,8 @@ public class LocationService extends Service {
 
     private LocationRequest locationRequest;
 
-    private long UPDATE_INTERVAL = 10 * 1000;
-    private long FASTEST_INTERVAL = 2 * 1000;
+    private long UPDATE_INTERVAL = 2 * 60 * 1000;
+    private long FASTEST_INTERVAL = 60 * 1000;
 
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
@@ -61,7 +63,7 @@ public class LocationService extends Service {
             public void run() {
                 // Create the location request to start receiving updates
                 locationRequest = new LocationRequest();
-                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                 locationRequest.setInterval(UPDATE_INTERVAL);
                 locationRequest.setFastestInterval(FASTEST_INTERVAL);
 
@@ -76,24 +78,32 @@ public class LocationService extends Service {
 
                 // new Google API SDK v11 uses getFusedLocationProviderClient(this)
                 while (ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
-                getFusedLocationProviderClient(locationServiceContext).requestLocationUpdates(locationRequest, new LocationCallback() {
-                            @Override
-                            public void onLocationResult(LocationResult locationResult) {
-                                Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"Location fetched: " + locationResult.getLastLocation());
-                                AppResources.currentLocation = locationResult;
-                                final List<RecipientModel> recipients = AppResources.currentRecipientList;
-                                final String currentLocation = locationResult.getLastLocation().getLatitude() + ", " + locationResult.getLastLocation().getLongitude();
-                                for (RecipientModel recipient : recipients) {
-                                    if(currentLocation.equals(recipient.getLocationForRecipient())) {
-                                        SMSHelper.sendSMS(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
+                        && ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    getFusedLocationProviderClient(locationServiceContext).requestLocationUpdates(locationRequest, new LocationCallback() {
+                                @Override
+                                public void onLocationResult(LocationResult locationResult) {
+                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Location fetched: " + locationResult.getLastLocation());
+                                    AppResources.currentLocation = locationResult;
+                                    final List<RecipientModel> recipients = AppResources.currentRecipientList;
+                                    final double currentLatitude = locationResult.getLastLocation().getLatitude();
+                                    final double currentLongitude = locationResult.getLastLocation().getLongitude();
+                                    for (RecipientModel recipient : recipients) {
+                                        final double recipientLatitude = recipient.getLatitude();
+                                        final double recipientLongitude = recipient.getLongitude();
+                                        float[] distance = new float[1];
+                                        Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
+                                        if (distance[0] < 2.0) {
+                                            Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
+                                                    "Distance to location for accuracy: " + distance[0]);
+                                            //SMSHelper.sendSMS(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
+                                        }
                                     }
                                 }
-                            }
-                        },
-                        Looper.myLooper());
+                            },
+                            Looper.myLooper());
+                }
             }
         };
-        locationHandler.postDelayed(locationRunner, 10000);
+        locationHandler.postDelayed(locationRunner, 0);
     }
 }

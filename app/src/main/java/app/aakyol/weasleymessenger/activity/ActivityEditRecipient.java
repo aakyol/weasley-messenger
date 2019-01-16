@@ -46,7 +46,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
                     DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
                     DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
                     DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
-                    DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION
+                    DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
+                    DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE
             };
 
             String selection = DBHelper.DBEntry._ID + " = ?";
@@ -67,7 +68,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 recipient.setAliasName(cursor.getString(0));
                 recipient.setPhoneNumber(cursor.getString(1));
                 recipient.setMessageToBeSent(cursor.getString(2));
-                recipient.setLocationForRecipient(cursor.getString(3));
+                recipient.setLatitude(cursor.getDouble(3));
+                recipient.setLongitude(cursor.getDouble(4));
             }
             cursor.close();
         }
@@ -87,7 +89,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         messageText.setText(recipient.getMessageToBeSent());
 
         final TextView locationText = findViewById(R.id.edit_location_current);
-        locationText.setText("Current location on recipient: " + recipient.getLocationForRecipient());
+        locationText.setText("Current location on recipient: " + recipient.getLatitude() + ", " + recipient.getLongitude());
 
         final Button backButton = findViewById(R.id.edit_back_button_recipient);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -127,10 +129,12 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString());
                 values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString());
                 if(Objects.isNull(locationForRecipientMessage)) {
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION,recipient.getLocationForRecipient());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,recipient.getLatitude());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE,recipient.getLongitude());
                 }
                 else {
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION, locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, locationForRecipientMessage.getLastLocation().getLatitude());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, locationForRecipientMessage.getLastLocation().getLongitude());
                 }
                 db.update(DBHelper.DBEntry.TABLE_NAME, values, DBHelper.DBEntry._ID + " = ?", new String[] {String.valueOf(recipientDBRowId)});
                 db.close();

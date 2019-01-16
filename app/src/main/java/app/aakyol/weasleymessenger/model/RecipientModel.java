@@ -2,6 +2,8 @@ package app.aakyol.weasleymessenger.model;
 
 import android.location.Location;
 
+import com.google.android.gms.location.LocationResult;
+
 /**
  * Created by aakyo on 31/03/2018.
  */
@@ -14,7 +16,8 @@ public class RecipientModel {
     private String lastName;
     private String phoneNumber;
     private String messageToBeSent;
-    private String locationForRecipient;
+    private double latitude;
+    private double longitude;
 
     public int getDbID() {
         return dbID;
@@ -56,12 +59,20 @@ public class RecipientModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getLocationForRecipient() {
-        return locationForRecipient;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLocationForRecipient(String locationForRecipient) {
-        this.locationForRecipient = locationForRecipient;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getMessageToBeSent() {
