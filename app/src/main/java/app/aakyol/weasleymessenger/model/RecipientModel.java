@@ -12,8 +12,6 @@ public class RecipientModel {
 
     private int dbID;
     private String aliasName;
-    private String firstName;
-    private String lastName;
     private String phoneNumber;
     private String messageToBeSent;
     private double latitude;
@@ -33,22 +31,6 @@ public class RecipientModel {
 
     public void setAliasName(String aliasName) {
         this.aliasName = aliasName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getPhoneNumber() {

@@ -159,7 +159,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                     .setNegativeButton("No", dialogClickListener).show();
         }
         else {
-            startService(locationServiceIntent);
+            startForegroundService(locationServiceIntent);
         }
     }
 

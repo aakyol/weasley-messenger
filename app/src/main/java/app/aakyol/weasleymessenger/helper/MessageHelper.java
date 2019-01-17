@@ -22,9 +22,10 @@ public class MessageHelper {
     }
 
     /**
-     * WhatsApp message sender
+     * WhatsApp message sender - Deprecated since it launches an activity
      * @param context
      */
+    @Deprecated
     public static void sendWhatsAppMessage(final String phoneNo, final String message, final Context context) {
 
         PackageManager pm = context.getPackageManager();
