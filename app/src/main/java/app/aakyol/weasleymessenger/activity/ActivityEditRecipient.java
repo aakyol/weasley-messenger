@@ -134,7 +134,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 }
                 else {
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, locationForRecipientMessage.getLastLocation().getLatitude());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, locationForRecipientMessage.getLastLocation().getLongitude());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE, locationForRecipientMessage.getLastLocation().getLongitude());
                 }
                 db.update(DBHelper.DBEntry.TABLE_NAME, values, DBHelper.DBEntry._ID + " = ?", new String[] {String.valueOf(recipientDBRowId)});
                 db.close();
