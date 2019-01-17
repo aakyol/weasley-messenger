@@ -15,7 +15,7 @@ import java.util.Objects;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import app.aakyol.weasleymessenger.R;
-import app.aakyol.weasleymessenger.constants.AppResources;
+import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 
@@ -71,7 +71,8 @@ public class ActivityNewRecipient extends AppCompatActivity {
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,((EditText) findViewById(R.id.recipient_name_input)).getText().toString());
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,((EditText) findViewById(R.id.phone_number_input)).getText().toString());
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LOCATION,locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,locationForRecipientMessage.getLastLocation().getLatitude());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE,locationForRecipientMessage.getLastLocation().getLongitude());
                     db.insert(DBHelper.DBEntry.TABLE_NAME, null, values);
                     db.close();
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,

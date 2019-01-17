@@ -28,14 +28,6 @@
             android:text="ADD RECIPIENT"
             app:srcCompat="@android:drawable/ic_dialog_email" />
 
-        <Button
-            android:id="@+id/location_refresh_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="REFRESH LOCATION"
-            app:srcCompat="@android:drawable/ic_menu_mylocation" />
-
     </LinearLayout>
 
     <ListView

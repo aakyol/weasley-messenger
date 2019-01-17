@@ -19,7 +19,8 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_RECPIPENT_NAME = "name";
         public static final String COLUMN_NAME_RECPIPENT_PHONE = "phone";
         public static final String COLUMN_NAME_RECPIPENT_MESSAGE = "message";
-        public static final String COLUMN_NAME_RECPIPENT_LOCATION = "location";
+        public static final String COLUMN_NAME_RECPIPENT_LATITUDE = "latitude";
+        public static final String COLUMN_NAME_RECPIPENT_LONGITUDE = "longitude";
     }
 
     private static final String SQL_CREATE_ENTRIES =
@@ -28,7 +29,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBEntry.COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_PHONE + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_LOCATION + " TEXT)";
+                    DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE + " TEXT," +
+                    DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
