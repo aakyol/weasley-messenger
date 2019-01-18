@@ -40,8 +40,8 @@ public class LocationService extends Service {
 
     private LocationRequest locationRequest;
 
-    private long UPDATE_INTERVAL = 30 * 1000;
-    private long FASTEST_INTERVAL = 60 * 1000;
+    private long UPDATE_INTERVAL = 60 * 1000;
+    private long FASTEST_INTERVAL = 30 * 1000;
 
     private Set<String> sentList = new HashSet<>();
     private Handler locationHandler = new Handler();
@@ -86,33 +86,33 @@ public class LocationService extends Service {
                 if (ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     getFusedLocationProviderClient(locationServiceContext).requestLocationUpdates(locationRequest, new LocationCallback() {
-                                @Override
-                                public void onLocationResult(LocationResult locationResult) {
-                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Location fetched: " + locationResult.getLastLocation());
-                                    AppResources.currentLocation = locationResult;
-                                    final List<RecipientModel> recipients = AppResources.currentRecipientList;
-                                    final double currentLatitude = locationResult.getLastLocation().getLatitude();
-                                    final double currentLongitude = locationResult.getLastLocation().getLongitude();
-                                    for (RecipientModel recipient : recipients) {
-                                        final double recipientLatitude = recipient.getLatitude();
-                                        final double recipientLongitude = recipient.getLongitude();
-                                        float[] distance = new float[1];
-                                        Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
-                                        if (!sentList.contains(recipient.getAliasName()) && distance[0] < 20.0) {
-                                            Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
-                                                    "Distance to location for accuracy: " + distance[0]);
-                                            MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
-                                            sentList.add(recipient.getAliasName());
-                                        } else if (distance[0] >= 20.0 && sentList.contains(recipient.getAliasName())) {
-                                            sentList.remove(recipient.getAliasName());
-                                        }
-                                    }
+                        @Override
+                        public void onLocationResult(LocationResult locationResult) {
+                            Log.d(LOG_TAG_LOCATIONSERVICE, "Location fetched: " + locationResult.getLastLocation());
+                            AppResources.currentLocation = locationResult;
+                            final List<RecipientModel> recipients = AppResources.currentRecipientList;
+                            final double currentLatitude = locationResult.getLastLocation().getLatitude();
+                            final double currentLongitude = locationResult.getLastLocation().getLongitude();
+                            for (RecipientModel recipient : recipients) {
+                                final double recipientLatitude = recipient.getLatitude();
+                                final double recipientLongitude = recipient.getLongitude();
+                                float[] distance = new float[1];
+                                Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
+                                if (!sentList.contains(recipient.getAliasName()) && distance[0] < 20.0) {
+                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
+                                            "Distance to location for accuracy: " + distance[0]);
+                                    MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
+                                    sentList.add(recipient.getAliasName());
+                                } else if (distance[0] >= 20.0 && sentList.contains(recipient.getAliasName())) {
+                                    sentList.remove(recipient.getAliasName());
                                 }
-                            },
-                            Looper.myLooper());
+                            }
+                        }
+                    },
+                    Looper.myLooper());
                 }
             }
         };
-        locationHandler.postDelayed(locationRunner, 10000);
+        locationHandler.postDelayed(locationRunner, 0);
     }
 }
