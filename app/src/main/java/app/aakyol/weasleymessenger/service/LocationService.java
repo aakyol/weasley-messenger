@@ -21,13 +21,10 @@ import com.google.android.gms.location.SettingsClient;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.MessageHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.resource.AppResources;

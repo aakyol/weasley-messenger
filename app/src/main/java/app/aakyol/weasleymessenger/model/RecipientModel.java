@@ -1,9 +1,5 @@
 package app.aakyol.weasleymessenger.model;
 
-import android.location.Location;
-
-import com.google.android.gms.location.LocationResult;
-
 /**
  * Created by aakyo on 31/03/2018.
  */

@@ -10,14 +10,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.location.LocationResult;
+
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import app.aakyol.weasleymessenger.R;
-import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
+import app.aakyol.weasleymessenger.resource.AppResources;
 
 public class ActivityNewRecipient extends AppCompatActivity {
 

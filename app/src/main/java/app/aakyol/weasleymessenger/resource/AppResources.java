@@ -3,7 +3,6 @@ package app.aakyol.weasleymessenger.resource;
 import com.google.android.gms.location.LocationResult;
 
 import java.util.List;
-import java.util.Set;
 
 import app.aakyol.weasleymessenger.model.RecipientModel;
 
