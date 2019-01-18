@@ -66,12 +66,19 @@ public class ActivityNewRecipient extends AppCompatActivity {
         saveRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String alias = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
+                final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
+                final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
+                if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                            "One of the fields is empty, which is not allowed.");
+                }
                 if(Objects.nonNull(locationForRecipientMessage)) {
                     SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
                     ContentValues values = new ContentValues();
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,((EditText) findViewById(R.id.recipient_name_input)).getText().toString());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,((EditText) findViewById(R.id.phone_number_input)).getText().toString());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString());
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, alias);
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE, message);
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,locationForRecipientMessage.getLastLocation().getLatitude());
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE,locationForRecipientMessage.getLastLocation().getLongitude());
                     db.insert(DBHelper.DBEntry.TABLE_NAME, null, values);
@@ -88,5 +95,8 @@ public class ActivityNewRecipient extends AppCompatActivity {
         });
     }
 
+    public Boolean ifAnyFieldIsEmpty(final String alias, final String phoneNo, final String message) {
+        return (alias.isEmpty() || phoneNo.isEmpty() || message.isEmpty());
+    }
 }
   

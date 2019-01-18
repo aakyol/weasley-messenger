@@ -123,24 +123,32 @@ public class ActivityEditRecipient extends AppCompatActivity {
         saveRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString());
-                values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString());
-                values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString());
-                if(Objects.isNull(locationForRecipientMessage)) {
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,recipient.getLatitude());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE,recipient.getLongitude());
+                final String alias = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
+                final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
+                final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
+                if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                            "One of the fields is empty, which is not allowed.");
                 }
                 else {
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, locationForRecipientMessage.getLastLocation().getLatitude());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE, locationForRecipientMessage.getLastLocation().getLongitude());
+                    SQLiteDatabase db = new DBHelper(activityContext).getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, alias);
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
+                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE, message);
+                    if (Objects.isNull(locationForRecipientMessage)) {
+                        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, recipient.getLatitude());
+                        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE, recipient.getLongitude());
+                    } else {
+                        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, locationForRecipientMessage.getLastLocation().getLatitude());
+                        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE, locationForRecipientMessage.getLastLocation().getLongitude());
+                    }
+                    db.update(DBHelper.DBEntry.TABLE_NAME, values, DBHelper.DBEntry._ID + " = ?", new String[]{String.valueOf(recipientDBRowId)});
+                    db.close();
+                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                            "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString() + "\" is saved.");
+                    finish();
                 }
-                db.update(DBHelper.DBEntry.TABLE_NAME, values, DBHelper.DBEntry._ID + " = ?", new String[] {String.valueOf(recipientDBRowId)});
-                db.close();
-                SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
-                        "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString() + "\" is saved.");
-                finish();
             }
         });
 
@@ -175,5 +183,9 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });
+    }
+
+    public Boolean ifAnyFieldIsEmpty(final String alias, final String phoneNo, final String message) {
+        return (alias.isEmpty() || phoneNo.isEmpty() || message.isEmpty());
     }
 }
