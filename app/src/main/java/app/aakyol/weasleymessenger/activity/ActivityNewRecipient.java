@@ -3,6 +3,7 @@ package app.aakyol.weasleymessenger.activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,21 +16,34 @@ import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import app.aakyol.weasleymessenger.AppComponent;
+import app.aakyol.weasleymessenger.AppModule;
+import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.resource.AppResources;
+import app.aakyol.weasleymessenger.validator.RecipientValidator;
 
 public class ActivityNewRecipient extends AppCompatActivity {
 
     private final Context activityContext = this;
-
     private LocationResult locationForRecipientMessage = null;
+
+    private AppComponent appComponent;
+    private DBHelper dbHelper;
+    private RecipientValidator recipientValidator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipient);
+
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule())
+                .build();
+        dbHelper = appComponent.getDBHelper();
+        recipientValidator = appComponent.getRecipientValidator();
 
         final Button backButton = findViewById(R.id.back_button_recipient);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -66,24 +80,17 @@ public class ActivityNewRecipient extends AppCompatActivity {
         saveRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String alias = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
-                final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
-                final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
-                if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
-                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                final String alias = ((EditText) findViewById(R.id.recipient_name_input)).getText().toString();
+                final String phoneNo = ((EditText) findViewById(R.id.phone_number_input)).getText().toString();
+                final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
+                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                    SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
-                if(Objects.nonNull(locationForRecipientMessage)) {
-                    SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, alias);
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE, message);
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,locationForRecipientMessage.getLastLocation().getLatitude());
-                    values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE,locationForRecipientMessage.getLastLocation().getLongitude());
-                    db.insert(DBHelper.DBEntry.TABLE_NAME, null, values);
-                    db.close();
-                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                else if(Objects.nonNull(locationForRecipientMessage)) {
+                    Location lastLocation = locationForRecipientMessage.getLastLocation();
+                    dbHelper.addRecipient(alias, phoneNo, message, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
+                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.recipient_name_input)).getText().toString() + "\" is  saved.");
                     finish();
                 }
@@ -93,10 +100,6 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public Boolean ifAnyFieldIsEmpty(final String alias, final String phoneNo, final String message) {
-        return (alias.isEmpty() || phoneNo.isEmpty() || message.isEmpty());
     }
 }
   

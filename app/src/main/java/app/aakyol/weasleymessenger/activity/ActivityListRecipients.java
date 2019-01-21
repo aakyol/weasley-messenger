@@ -6,8 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -17,14 +15,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import app.aakyol.weasleymessenger.AppComponent;
+import app.aakyol.weasleymessenger.AppModule;
+import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
-import app.aakyol.weasleymessenger.helper.MessageHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
@@ -34,13 +33,22 @@ import app.aakyol.weasleymessenger.service.LocationService;
 public class ActivityListRecipients extends AppCompatActivity {
 
     private Intent locationServiceIntent;
-    public static View activityViewObject;
     private Activity listRecipientActivity;
-    private Context listRecipientActivityContent;
+    private static Context listRecipientActivityContext;
 
+    public static View listRecipientActivityViewObject;
     private ListView listView;
-    private SQLiteDatabase recipientDatabase;
 
+    private AppComponent appComponent;
+    private DBHelper dbHelper;
+
+    public static Context getContext() {
+        return listRecipientActivityContext;
+    }
+
+    public static View getView() {
+        return listRecipientActivityViewObject;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +56,17 @@ public class ActivityListRecipients extends AppCompatActivity {
         setContentView(R.layout.activity_list_recipients);
 
         listRecipientActivity = this;
-        listRecipientActivityContent = this;
+        listRecipientActivityContext = this;
 
         listView = (ListView) findViewById(R.id.recipient_list);
-        recipientDatabase = new DBHelper(this).getReadableDatabase();
 
-        activityViewObject = findViewById(android.R.id.content);
+        listRecipientActivityViewObject = findViewById(android.R.id.content);
         locationServiceIntent = new Intent(this, LocationService.class);
+
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule())
+                .build();
+        dbHelper = appComponent.getDBHelper();
 
         requestPermissions();
 
@@ -62,7 +74,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent newRecipientIntent = new Intent(listRecipientActivityContent, ActivityNewRecipient.class);
+                Intent newRecipientIntent = new Intent(listRecipientActivityContext, ActivityNewRecipient.class);
                 listRecipientActivity.startActivity(newRecipientIntent);
             }
         });
@@ -70,7 +82,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editRecipientIntent = new Intent(listRecipientActivityContent, ActivityEditRecipient.class);
+                Intent editRecipientIntent = new Intent(listRecipientActivityContext, ActivityEditRecipient.class);
                 editRecipientIntent.putExtra(ActivityEditRecipient.RECIPIENT_ID, ((RecipientModel) parent.getAdapter().getItem(position)).getDbID());
                 listRecipientActivity.startActivity(editRecipientIntent);
             }
@@ -93,41 +105,8 @@ public class ActivityListRecipients extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        String[] columns = {
-                DBHelper.DBEntry._ID,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE
-        };
-
-        Cursor cursor = recipientDatabase.query(
-                DBHelper.DBEntry.TABLE_NAME,
-                columns,
-                "1",
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        List<RecipientModel> recipients = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            RecipientModel recipient = new RecipientModel();
-            recipient.setDbID(cursor.getInt(0));
-            recipient.setAliasName(cursor.getString(1));
-            recipient.setPhoneNumber(cursor.getString(2));
-            recipient.setMessageToBeSent(cursor.getString(3));
-            recipient.setLatitude(cursor.getDouble(4));
-            recipient.setLongitude(cursor.getDouble(5));
-            recipients.add(recipient);
-        }
-        cursor.close();
-
+        List<RecipientModel> recipients = dbHelper.getAllRecipients();
         AppResources.currentRecipientList = recipients;
-
         ArrayAdapter adapter = new ArrayAdapter<RecipientModel>(this,
                 R.layout.activity_list_recipient_layout, recipients);
 
@@ -144,14 +123,14 @@ public class ActivityListRecipients extends AppCompatActivity {
                         requestPermissions();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
-                        SnackbarHelper.printLongSnackbarMessage(activityViewObject,
+                        SnackbarHelper.printLongSnackbarMessage(listRecipientActivityViewObject,
                                 "Permission checks failed. The application will no longer" +
                                         "behave as expected. Please restart the application.");
                 }
             }
         };
 
-        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContent)) {
+        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContext)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Permissions are revoked. The application needs these permissions to" +
                     "work properly. Would you like to allow the permissions?")
