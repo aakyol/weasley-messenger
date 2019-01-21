@@ -23,6 +23,7 @@ import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.resource.AppResources;
+import app.aakyol.weasleymessenger.validator.RecipientValidator;
 
 public class ActivityNewRecipient extends AppCompatActivity {
 
@@ -31,6 +32,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
 
     private AppComponent appComponent;
     private DBHelper dbHelper;
+    private RecipientValidator recipientValidator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
+        recipientValidator = appComponent.getRecipientValidator();
 
         final Button backButton = findViewById(R.id.back_button_recipient);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +83,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 final String alias = ((EditText) findViewById(R.id.recipient_name_input)).getText().toString();
                 final String phoneNo = ((EditText) findViewById(R.id.phone_number_input)).getText().toString();
                 final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
-                if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
@@ -97,10 +100,6 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public Boolean ifAnyFieldIsEmpty(final String alias, final String phoneNo, final String message) {
-        return (alias.isEmpty() || phoneNo.isEmpty() || message.isEmpty());
     }
 }
   

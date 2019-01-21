@@ -23,6 +23,7 @@ import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
+import app.aakyol.weasleymessenger.validator.RecipientValidator;
 
 public class ActivityEditRecipient extends AppCompatActivity {
 
@@ -36,6 +37,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
 
     private AppComponent appComponent;
     private DBHelper dbHelper;
+    private RecipientValidator recipientValidator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
+        recipientValidator = appComponent.getRecipientValidator();
 
         recipientDBRowId = (int) getIntent().getExtras().get(RECIPIENT_ID);
         if(recipientDBRowId != -1) {
@@ -106,7 +109,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
                 String latitude;
                 String longitude;
-                if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
@@ -154,9 +157,5 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });
-    }
-
-    public Boolean ifAnyFieldIsEmpty(final String alias, final String phoneNo, final String message) {
-        return (alias.isEmpty() || phoneNo.isEmpty() || message.isEmpty());
     }
 }
