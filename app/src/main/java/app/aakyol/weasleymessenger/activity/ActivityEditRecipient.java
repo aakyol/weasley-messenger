@@ -127,7 +127,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
                 final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
                 if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
-                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                    SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
                 else {
@@ -164,7 +164,6 @@ public class ActivityEditRecipient extends AppCompatActivity {
                             case DialogInterface.BUTTON_POSITIVE:
                                 dialog.dismiss();
                                 SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
-                                ContentValues values = new ContentValues();
                                 db.delete(DBHelper.DBEntry.TABLE_NAME, DBHelper.DBEntry._ID + " = ?", new String[] {String.valueOf(recipientDBRowId)});
                                 db.close();
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +24,6 @@ import app.aakyol.weasleymessenger.resource.AppResources;
 public class ActivityNewRecipient extends AppCompatActivity {
 
     private final Context activityContext = this;
-
     private LocationResult locationForRecipientMessage = null;
 
     @Override
@@ -66,14 +66,14 @@ public class ActivityNewRecipient extends AppCompatActivity {
         saveRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String alias = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
-                final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
-                final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
+                final String alias = ((EditText) findViewById(R.id.recipient_name_input)).getText().toString();
+                final String phoneNo = ((EditText) findViewById(R.id.phone_number_input)).getText().toString();
+                final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
                 if(ifAnyFieldIsEmpty(alias, phoneNo, message)) {
-                    SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.activityViewObject,
+                    SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
-                if(Objects.nonNull(locationForRecipientMessage)) {
+                else if(Objects.nonNull(locationForRecipientMessage)) {
                     SQLiteDatabase db =  new DBHelper(activityContext).getWritableDatabase();
                     ContentValues values = new ContentValues();
                     values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, alias);

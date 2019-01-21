@@ -19,8 +19,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.Nullable;
@@ -46,6 +50,8 @@ public class LocationService extends Service {
     private Set<String> sentList = new HashSet<>();
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
+
+    private OutputStreamWriter outputStreamWriter;
 
     @Nullable
     @Override
@@ -101,6 +107,14 @@ public class LocationService extends Service {
                                 if (!sentList.contains(recipient.getAliasName()) && distance[0] < 20.0) {
                                     Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
                                             "Distance to location for accuracy: " + distance[0]);
+                                    try {
+                                        outputStreamWriter = new OutputStreamWriter(locationServiceContext.openFileOutput("weasley_service_logs.txt", Context.MODE_APPEND));
+                                        outputStreamWriter.write("Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
+                                                "Distance to location for accuracy: " + distance[0] + "m. \n");
+                                        outputStreamWriter.close();
+                                    } catch (IOException e) {
+                                        Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"File writer failed to write.");
+                                    }
                                     MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
                                     sentList.add(recipient.getAliasName());
                                 } else if (distance[0] >= 20.0 && sentList.contains(recipient.getAliasName())) {
@@ -114,5 +128,10 @@ public class LocationService extends Service {
             }
         };
         locationHandler.postDelayed(locationRunner, 0);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
