@@ -7,7 +7,7 @@ package app.aakyol.weasleymessenger.model;
 public class RecipientModel {
 
     private int dbID;
-    private String aliasName;
+    private String alias;
     private String phoneNumber;
     private String messageToBeSent;
     private double latitude;
@@ -21,12 +21,12 @@ public class RecipientModel {
         this.dbID = dbID;
     }
 
-    public String getAliasName() {
-        return aliasName;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setAliasName(String aliasName) {
-        this.aliasName = aliasName;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getPhoneNumber() {
@@ -63,7 +63,7 @@ public class RecipientModel {
 
     @Override
     public String toString() {
-        return this.aliasName;
+        return this.alias;
     }
 
 }

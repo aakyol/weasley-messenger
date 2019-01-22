@@ -9,7 +9,6 @@ import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -82,7 +81,7 @@ public class DBHelper extends SQLiteOpenHelper {
         while(cursor.moveToNext()) {
             RecipientModel recipient = new RecipientModel();
             recipient.setDbID(cursor.getInt(0));
-            recipient.setAliasName(cursor.getString(1));
+            recipient.setAlias(cursor.getString(1));
             recipient.setPhoneNumber(cursor.getString(2));
             recipient.setMessageToBeSent(cursor.getString(3));
             recipient.setLatitude(cursor.getDouble(4));
@@ -121,7 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         RecipientModel recipient = new RecipientModel();
         while(cursor.moveToNext()) {
-            recipient.setAliasName(cursor.getString(0));
+            recipient.setAlias(cursor.getString(0));
             recipient.setPhoneNumber(cursor.getString(1));
             recipient.setMessageToBeSent(cursor.getString(2));
             recipient.setLatitude(cursor.getDouble(3));

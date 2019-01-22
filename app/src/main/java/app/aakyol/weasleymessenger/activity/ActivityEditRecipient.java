@@ -3,7 +3,6 @@ package app.aakyol.weasleymessenger.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +22,7 @@ import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
+import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.validator.RecipientValidator;
 
 public class ActivityEditRecipient extends AppCompatActivity {
@@ -60,8 +60,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
             finish();
         }
 
-        final EditText nameText = findViewById(R.id.edit_recipient_name_input);
-        nameText.setText(recipient.getAliasName());
+        final EditText aliasText = findViewById(R.id.edit_recipient_alias_input);
+        aliasText.setText(recipient.getAlias());
 
         final EditText phoneText = findViewById(R.id.edit_phone_number_input);
         phoneText.setText(recipient.getPhoneNumber());
@@ -104,7 +104,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         saveRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String alias = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
+                final String alias = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
                 final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
                 final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
                 String latitude;
@@ -123,7 +123,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                     }
                     dbHelper.updateRecipient(recipientDBRowId, alias, phoneNo, message, latitude, longitude);
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
-                            "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString() + "\" is saved.");
+                            "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString() + "\" is saved.");
                     finish();
                 }
             }
@@ -133,7 +133,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         deleteRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String recipientName = ((EditText) findViewById(R.id.edit_recipient_name_input)).getText().toString();
+                final String recipientName = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

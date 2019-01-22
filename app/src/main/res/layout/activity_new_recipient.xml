@@ -25,14 +25,14 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/recipient_name"
-            app:layout_constraintEnd_toStartOf="@+id/recipient_name_input"
+            android:text="@string/recipient_alias"
+            app:layout_constraintEnd_toStartOf="@+id/recipient_alias_input"
             app:layout_constraintHorizontal_bias="0.072"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/recipient_name_input"
+            android:id="@+id/recipient_alias_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

@@ -3,7 +3,7 @@
     <string name="new_recipient_activity_name">New Recipient</string>
     <string name="edit_recipient_activity_name">Edit Recipient</string>
     <string name="action_settings">Settings</string>
-    <string name="recipient_name">Name</string>
+    <string name="recipient_alias">Alias</string>
     <string name="message_to_be_sent">Message To Be Sent</string>
     <string name="phone_number">Phone Number</string>
     <string name="location_label">Get Location</string>
