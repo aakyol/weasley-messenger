@@ -3,6 +3,7 @@ package app.aakyol.weasleymessenger.activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,19 +38,15 @@ public class ActivityNewRecipient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipient);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
         recipientValidator = appComponent.getRecipientValidator();
-
-        final Button backButton = findViewById(R.id.back_button_recipient);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         final TextView locationText = findViewById(R.id.location_current);
         locationText.setText("");
@@ -98,6 +95,16 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
   

@@ -1,9 +1,11 @@
 package app.aakyol.weasleymessenger.activity;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +46,10 @@ public class ActivityEditRecipient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recipient);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
@@ -71,14 +77,6 @@ public class ActivityEditRecipient extends AppCompatActivity {
 
         final TextView locationText = findViewById(R.id.edit_location_current);
         locationText.setText("Current location on recipient: " + recipient.getLatitude() + ", " + recipient.getLongitude());
-
-        final Button backButton = findViewById(R.id.edit_back_button_recipient);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         final Button fetchLocationButton = findViewById(R.id.edit_location_button);
         fetchLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -158,5 +156,15 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
