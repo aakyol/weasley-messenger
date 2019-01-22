@@ -133,7 +133,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         deleteRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String recipientName = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
+                final String recipientAlias = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -141,9 +141,9 @@ public class ActivityEditRecipient extends AppCompatActivity {
                             case DialogInterface.BUTTON_POSITIVE:
                                 dialog.dismiss();
                                 dbHelper.deleteRecipient(recipientDBRowId);
-                                AppResources.sentList.remove(recipientName);
+                                AppResources.sentList.remove(recipientAlias);
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
-                                        "Recipient \"" + recipientName + "\" is deleted.");
+                                        "Recipient \"" + recipientAlias + "\" is deleted.");
                                 finish();
                                 break;
 
@@ -154,7 +154,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
-                builder.setMessage("Are you sure to delete the recipient \"" + recipientName + "\" ?").setPositiveButton("Yes", dialogClickListener)
+                builder.setMessage("Are you sure to delete the recipient \"" + recipientAlias + "\" ?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });

@@ -17,7 +17,7 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/edit_recipient_name"
+            android:id="@+id/edit_recipient_alias"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
             android:layout_marginStart="16dp"

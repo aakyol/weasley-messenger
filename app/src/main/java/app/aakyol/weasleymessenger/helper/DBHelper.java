@@ -29,7 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static class DBEntry implements BaseColumns {
         public static final String TABLE_NAME = "recipients";
-        public static final String COLUMN_NAME_RECPIPENT_NAME = "name";
+        public static final String COLUMN_NAME_RECPIPENT_ALIAS = "alias";
         public static final String COLUMN_NAME_RECPIPENT_PHONE = "phone";
         public static final String COLUMN_NAME_RECPIPENT_MESSAGE = "message";
         public static final String COLUMN_NAME_RECPIPENT_LATITUDE = "latitude";
@@ -39,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DBEntry.TABLE_NAME + " (" +
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
+                    DBEntry.COLUMN_NAME_RECPIPENT_ALIAS + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_PHONE + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE + " TEXT," +
@@ -59,7 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = {
                 DBHelper.DBEntry._ID,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
@@ -98,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] columns = {
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
@@ -169,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private ContentValues provideValueObject(final String alias, final String phoneNo, final String message, final String latitude, final String longitude) {
         ContentValues values = new ContentValues();
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, alias);
+        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS, alias);
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE, message);
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, latitude);
