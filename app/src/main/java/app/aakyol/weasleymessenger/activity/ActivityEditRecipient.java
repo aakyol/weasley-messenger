@@ -141,6 +141,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                             case DialogInterface.BUTTON_POSITIVE:
                                 dialog.dismiss();
                                 dbHelper.deleteRecipient(recipientDBRowId);
+                                AppResources.sentList.remove(recipientName);
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                                         "Recipient \"" + recipientName + "\" is deleted.");
                                 finish();

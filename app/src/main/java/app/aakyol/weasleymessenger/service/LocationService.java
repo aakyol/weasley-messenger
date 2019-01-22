@@ -19,7 +19,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashSet;
@@ -47,10 +46,8 @@ public class LocationService extends Service {
     private long UPDATE_INTERVAL = 60 * 1000;
     private long FASTEST_INTERVAL = 30 * 1000;
 
-    private Set<String> sentList = new HashSet<>();
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
-
     private OutputStreamWriter outputStreamWriter;
 
     @Nullable
@@ -63,8 +60,12 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = new Notification();
         locationServiceContext = this;
+        if(Objects.isNull(AppResources.sentList)) {
+            AppResources.sentList = new HashSet<>();
+        }
         startLocationUpdates();
         startForeground(0, notification);
+        AppResources.isLocationServiceRunning = true;
         return START_STICKY;
     }
 
@@ -104,21 +105,21 @@ public class LocationService extends Service {
                                 final double recipientLongitude = recipient.getLongitude();
                                 float[] distance = new float[1];
                                 Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
-                                if (!sentList.contains(recipient.getAliasName()) && distance[0] < 20.0) {
-                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
+                                if (!AppResources.sentList.contains(recipient.getAlias()) && distance[0] < 20.0) {
+                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAlias() + "\". " +
                                             "Distance to location for accuracy: " + distance[0]);
                                     try {
                                         outputStreamWriter = new OutputStreamWriter(locationServiceContext.openFileOutput("weasley_service_logs.txt", Context.MODE_APPEND));
-                                        outputStreamWriter.write("Matched location. Sending the message to recipient \"" + recipient.getAliasName() + "\". " +
+                                        outputStreamWriter.write("Matched location. Sending the message to recipient \"" + recipient.getAlias() + "\". " +
                                                 "Distance to location for accuracy: " + distance[0] + "m. \n");
                                         outputStreamWriter.close();
                                     } catch (IOException e) {
                                         Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"File writer failed to write.");
                                     }
                                     MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
-                                    sentList.add(recipient.getAliasName());
-                                } else if (distance[0] >= 20.0 && sentList.contains(recipient.getAliasName())) {
-                                    sentList.remove(recipient.getAliasName());
+                                    AppResources.sentList.add(recipient.getAlias());
+                                } else if (distance[0] >= 20.0 && AppResources.sentList.contains(recipient.getAlias())) {
+                                    AppResources.sentList.remove(recipient.getAlias());
                                 }
                             }
                         }
@@ -133,5 +134,6 @@ public class LocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        AppResources.isLocationServiceRunning = false;
     }
 }

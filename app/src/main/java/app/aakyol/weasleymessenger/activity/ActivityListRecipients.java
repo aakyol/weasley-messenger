@@ -2,11 +2,14 @@ package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.List;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -29,6 +33,8 @@ import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.service.LocationService;
+
+import static app.aakyol.weasleymessenger.resource.AppResources.LogConstans.AppLogConstants.LOG_TAG_ACTIVITYLISTRECIPIENTS;
 
 public class ActivityListRecipients extends AppCompatActivity {
 
@@ -61,14 +67,19 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.recipient_list);
 
         listRecipientActivityViewObject = findViewById(android.R.id.content);
-        locationServiceIntent = new Intent(this, LocationService.class);
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
 
-        requestPermissions();
+        if(Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
+            locationServiceIntent = new Intent(this, LocationService.class);
+            requestPermissions();
+        }
+        else {
+            Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
+        }
 
         Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
