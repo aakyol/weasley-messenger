@@ -1,8 +1,6 @@
 package app.aakyol.weasleymessenger.activity;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
@@ -80,7 +78,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
         saveRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String alias = ((EditText) findViewById(R.id.recipient_name_input)).getText().toString();
+                final String alias = ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString();
                 final String phoneNo = ((EditText) findViewById(R.id.phone_number_input)).getText().toString();
                 final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
                 if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message)) {
@@ -91,7 +89,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
                     Location lastLocation = locationForRecipientMessage.getLastLocation();
                     dbHelper.addRecipient(alias, phoneNo, message, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
-                            "Recipient \"" + ((EditText) findViewById(R.id.recipient_name_input)).getText().toString() + "\" is  saved.");
+                            "Recipient \"" + ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString() + "\" is  saved.");
                     finish();
                 }
                 else {
