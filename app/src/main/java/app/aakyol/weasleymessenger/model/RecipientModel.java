@@ -10,6 +10,7 @@ public class RecipientModel {
     private String alias;
     private String phoneNumber;
     private String messageToBeSent;
+    private Double distance;
     private double latitude;
     private double longitude;
 
@@ -59,6 +60,14 @@ public class RecipientModel {
 
     public void setMessageToBeSent(String messageToBeSent) {
         this.messageToBeSent = messageToBeSent;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 
     @Override

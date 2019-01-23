@@ -105,7 +105,7 @@ public class LocationService extends Service {
                                 final double recipientLongitude = recipient.getLongitude();
                                 float[] distance = new float[1];
                                 Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
-                                if (!AppResources.sentList.contains(recipient.getAlias()) && distance[0] < 20.0) {
+                                if (!AppResources.sentList.contains(recipient.getAlias()) && distance[0] < recipient.getDistance()) {
                                     Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAlias() + "\". " +
                                             "Distance to location for accuracy: " + distance[0]);
                                     try {
@@ -118,7 +118,7 @@ public class LocationService extends Service {
                                     }
                                     MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
                                     AppResources.sentList.add(recipient.getAlias());
-                                } else if (distance[0] >= 20.0 && AppResources.sentList.contains(recipient.getAlias())) {
+                                } else if (distance[0] >= recipient.getDistance() && AppResources.sentList.contains(recipient.getAlias())) {
                                     AppResources.sentList.remove(recipient.getAlias());
                                 }
                             }
