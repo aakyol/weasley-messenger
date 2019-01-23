@@ -32,6 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_RECPIPENT_ALIAS = "alias";
         public static final String COLUMN_NAME_RECPIPENT_PHONE = "phone";
         public static final String COLUMN_NAME_RECPIPENT_MESSAGE = "message";
+        public static final String COLUMN_NAME_RECPIPENT_DISTANCE = "distance";
         public static final String COLUMN_NAME_RECPIPENT_LATITUDE = "latitude";
         public static final String COLUMN_NAME_RECPIPENT_LONGITUDE = "longitude";
     }
