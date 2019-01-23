@@ -8,6 +8,7 @@ public class RecipientModel {
 
     private int dbID;
     private String alias;
+    private String name;
     private String phoneNumber;
     private String messageToBeSent;
     private Double distance;
@@ -28,6 +29,14 @@ public class RecipientModel {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhoneNumber() {

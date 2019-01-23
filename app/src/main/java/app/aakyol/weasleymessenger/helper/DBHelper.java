@@ -30,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static class DBEntry implements BaseColumns {
         public static final String TABLE_NAME = "recipients";
         public static final String COLUMN_NAME_RECPIPENT_ALIAS = "alias";
+        public static final String COLUMN_NAME_RECPIPENT_NAME = "name";
         public static final String COLUMN_NAME_RECPIPENT_PHONE = "phone";
         public static final String COLUMN_NAME_RECPIPENT_MESSAGE = "message";
         public static final String COLUMN_NAME_RECPIPENT_DISTANCE = "distance";
@@ -41,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + DBEntry.TABLE_NAME + " (" +
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
                     DBEntry.COLUMN_NAME_RECPIPENT_ALIAS + " TEXT," +
+                    DBEntry.COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_PHONE + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE + " TEXT," +
@@ -62,6 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] columns = {
                 DBHelper.DBEntry._ID,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE,
@@ -85,11 +88,12 @@ public class DBHelper extends SQLiteOpenHelper {
             RecipientModel recipient = new RecipientModel();
             recipient.setDbID(cursor.getInt(0));
             recipient.setAlias(cursor.getString(1));
-            recipient.setPhoneNumber(cursor.getString(2));
-            recipient.setMessageToBeSent(cursor.getString(3));
-            recipient.setDistance(cursor.getDouble(4));
-            recipient.setLatitude(cursor.getDouble(5));
-            recipient.setLongitude(cursor.getDouble(6));
+            recipient.setName(cursor.getString(2));
+            recipient.setPhoneNumber(cursor.getString(3));
+            recipient.setMessageToBeSent(cursor.getString(4));
+            recipient.setDistance(cursor.getDouble(5));
+            recipient.setLatitude(cursor.getDouble(6));
+            recipient.setLongitude(cursor.getDouble(7));
             recipients.add(recipient);
         }
         cursor.close();
@@ -103,6 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String[] columns = {
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS,
+                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
                 DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE,
@@ -126,11 +131,12 @@ public class DBHelper extends SQLiteOpenHelper {
         RecipientModel recipient = new RecipientModel();
         while(cursor.moveToNext()) {
             recipient.setAlias(cursor.getString(0));
-            recipient.setPhoneNumber(cursor.getString(1));
-            recipient.setMessageToBeSent(cursor.getString(2));
-            recipient.setDistance(cursor.getDouble(3));
-            recipient.setLatitude(cursor.getDouble(4));
-            recipient.setLongitude(cursor.getDouble(5));
+            recipient.setName(cursor.getString(1));
+            recipient.setPhoneNumber(cursor.getString(2));
+            recipient.setMessageToBeSent(cursor.getString(3));
+            recipient.setDistance(cursor.getDouble(4));
+            recipient.setLatitude(cursor.getDouble(5));
+            recipient.setLongitude(cursor.getDouble(6));
         }
         cursor.close();
         db.close();
@@ -138,22 +144,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return recipient;
     }
 
-    public long addRecipient(final String alias, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
+    public long addRecipient(final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.insert(
                 DBHelper.DBEntry.TABLE_NAME,
                 null,
-                provideValueObject(alias, phoneNo, message, distance, latitude, longitude)
+                provideValueObject(alias, name, phoneNo, message, distance, latitude, longitude)
         );
         db.close();
         return result;
     }
 
-    public int updateRecipient(final int rowId, final String alias, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
+    public int updateRecipient(final int rowId, final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.update(
                 DBHelper.DBEntry.TABLE_NAME,
-                provideValueObject(alias, phoneNo, message, distance, latitude, longitude),
+                provideValueObject(alias, name, phoneNo, message, distance, latitude, longitude),
                 DBHelper.DBEntry._ID + " = ?",
                 new String[]{String.valueOf(rowId)}
         );
@@ -173,9 +179,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    private ContentValues provideValueObject(final String alias, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
+    private ContentValues provideValueObject(final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS, alias);
+        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, name);
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE, message);
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE, distance);

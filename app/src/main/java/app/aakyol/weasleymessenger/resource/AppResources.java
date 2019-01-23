@@ -38,6 +38,8 @@ public class AppResources {
 
     }
 
+    public static final int RESULT_PICK_CONTACT = 100;
+
     public static Boolean isLocationServiceRunning;
     public static LocationResult currentLocation;
     public static List<RecipientModel> currentRecipientList;

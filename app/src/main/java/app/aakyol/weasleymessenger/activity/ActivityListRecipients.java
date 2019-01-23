@@ -103,7 +103,8 @@ public class ActivityListRecipients extends AppCompatActivity {
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.SEND_SMS
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.READ_CONTACTS
         }, 1);
     }
 

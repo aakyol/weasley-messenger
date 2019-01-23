@@ -1,8 +1,10 @@
 package app.aakyol.weasleymessenger.activity;
 
-import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,17 +23,18 @@ import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
+import app.aakyol.weasleymessenger.model.ContactModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.validator.RecipientValidator;
 
 public class ActivityNewRecipient extends AppCompatActivity {
 
-    private final Context activityContext = this;
     private LocationResult locationForRecipientMessage = null;
-
     private AppComponent appComponent;
     private DBHelper dbHelper;
     private RecipientValidator recipientValidator;
+
+    private ContactModel selectedContact = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +53,14 @@ public class ActivityNewRecipient extends AppCompatActivity {
 
         final TextView locationText = findViewById(R.id.location_current);
         locationText.setText("");
+
+        final Button selectContactButton = findViewById(R.id.phone_number_button);
+        selectContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContactList(v);
+            }
+        });
 
         final Button fetchLocationButton = findViewById(R.id.location_button);
         fetchLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +87,8 @@ public class ActivityNewRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String alias = ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString();
-                final String phoneNo = ((EditText) findViewById(R.id.phone_number_input)).getText().toString();
+                final String name = selectedContact.getName();
+                final String phoneNo = selectedContact.getPhoneNo();
                 final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
                 final String distance = ((EditText) findViewById(R.id.location_distance_input)).getText().toString();
                 if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
@@ -106,6 +118,32 @@ public class ActivityNewRecipient extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getContactList(View v)
+    {
+        Intent contactsIntent = new Intent(Intent.ACTION_PICK,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        startActivityForResult(contactsIntent, AppResources.RESULT_PICK_CONTACT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        getSelectedContact(data);
+    }
+
+    private void getSelectedContact(final Intent data) {
+        if(Objects.nonNull(data)) {
+            Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
+            cursor.moveToFirst();
+            int phoneNoIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+            String phoneNo = cursor.getString(phoneNoIndex);
+            String name = cursor.getString(nameIndex);
+            final TextView phoneNumberText = findViewById(R.id.phone_number_current);
+            phoneNumberText.setText("Current selected contact: " + name);
+            selectedContact = new ContactModel(name, phoneNo);
+        }
     }
 }
   
