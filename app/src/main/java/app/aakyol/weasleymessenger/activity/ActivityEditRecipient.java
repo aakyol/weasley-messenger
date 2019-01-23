@@ -105,9 +105,10 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 final String alias = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
                 final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
                 final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
+                final String distance = ((EditText) findViewById(R.id.edit_location_distance_input)).getText().toString();
                 String latitude;
                 String longitude;
-                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
@@ -119,7 +120,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         latitude = Double.toString(locationForRecipientMessage.getLastLocation().getLatitude());
                         longitude =  Double.toString(locationForRecipientMessage.getLastLocation().getLongitude());
                     }
-                    dbHelper.updateRecipient(recipientDBRowId, alias, phoneNo, message, latitude, longitude);
+                    dbHelper.updateRecipient(recipientDBRowId, alias, phoneNo, message, distance, latitude, longitude);
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString() + "\" is saved.");
                     finish();

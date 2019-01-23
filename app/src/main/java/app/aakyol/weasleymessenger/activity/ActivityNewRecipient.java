@@ -78,13 +78,14 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 final String alias = ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString();
                 final String phoneNo = ((EditText) findViewById(R.id.phone_number_input)).getText().toString();
                 final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
-                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message)) {
+                final String distance = ((EditText) findViewById(R.id.location_distance_input)).getText().toString();
+                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
                 }
                 else if(Objects.nonNull(locationForRecipientMessage)) {
                     Location lastLocation = locationForRecipientMessage.getLastLocation();
-                    dbHelper.addRecipient(alias, phoneNo, message, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
+                    dbHelper.addRecipient(alias, phoneNo, message, distance, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString() + "\" is  saved.");
                     finish();
