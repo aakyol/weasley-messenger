@@ -1,6 +1,5 @@
 package app.aakyol.weasleymessenger.activity;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
