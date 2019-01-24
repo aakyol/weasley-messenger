@@ -4,7 +4,10 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +26,7 @@ import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
+import app.aakyol.weasleymessenger.model.ContactModel;
 import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.validator.RecipientValidator;
@@ -40,6 +44,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
     private AppComponent appComponent;
     private DBHelper dbHelper;
     private RecipientValidator recipientValidator;
+
+    private ContactModel selectedContact = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,14 +75,25 @@ public class ActivityEditRecipient extends AppCompatActivity {
         final EditText aliasText = findViewById(R.id.edit_recipient_alias_input);
         aliasText.setText(recipient.getAlias());
 
-        final EditText phoneText = findViewById(R.id.edit_phone_number_input);
-        phoneText.setText(recipient.getPhoneNumber());
+        final TextView phoneText = findViewById(R.id.edit_phone_number_current);
+        phoneText.setText("Current selected contact: " + recipient.getName());
 
         final EditText messageText = findViewById(R.id.edit_message_to_be_sent_input);
         messageText.setText(recipient.getMessageToBeSent());
 
+        final EditText distanceText = findViewById(R.id.edit_location_distance_input);
+        distanceText.setText(String.format(recipient.getDistance().toString()));
+
         final TextView locationText = findViewById(R.id.edit_location_current);
         locationText.setText("Current location on recipient: " + recipient.getLatitude() + ", " + recipient.getLongitude());
+
+        final Button selectContactButton = findViewById(R.id.edit_phone_number_button);
+        selectContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContactList(v);
+            }
+        });
 
         final Button fetchLocationButton = findViewById(R.id.edit_location_button);
         fetchLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +120,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String alias = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
-                final String phoneNo = ((EditText) findViewById(R.id.edit_phone_number_input)).getText().toString();
+                final String name = selectedContact.getName();
+                final String phoneNo = selectedContact.getPhoneNo();
                 final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
                 final String distance = ((EditText) findViewById(R.id.edit_location_distance_input)).getText().toString();
                 String latitude;
@@ -120,7 +138,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         latitude = Double.toString(locationForRecipientMessage.getLastLocation().getLatitude());
                         longitude =  Double.toString(locationForRecipientMessage.getLastLocation().getLongitude());
                     }
-                    dbHelper.updateRecipient(recipientDBRowId, alias, phoneNo, message, distance, latitude, longitude);
+                    dbHelper.updateRecipient(recipientDBRowId, alias, name, phoneNo, message, distance, latitude, longitude);
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString() + "\" is saved.");
                     finish();
@@ -167,5 +185,31 @@ public class ActivityEditRecipient extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getContactList(View v)
+    {
+        Intent contactsIntent = new Intent(Intent.ACTION_PICK,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        startActivityForResult(contactsIntent, AppResources.RESULT_PICK_CONTACT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        getSelectedContact(data);
+    }
+
+    private void getSelectedContact(final Intent data) {
+        if(Objects.nonNull(data)) {
+            Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
+            cursor.moveToFirst();
+            int phoneNoIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+            String phoneNo = cursor.getString(phoneNoIndex);
+            String name = cursor.getString(nameIndex);
+            final TextView phoneNumberText = findViewById(R.id.edit_phone_number_current);
+            phoneNumberText.setText("Current selected contact: " + name);
+            selectedContact = new ContactModel(name, phoneNo);
+        }
     }
 }

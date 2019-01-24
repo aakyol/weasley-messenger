@@ -6,6 +6,7 @@
     <string name="recipient_alias">Alias</string>
     <string name="message_to_be_sent">Message To Be Sent</string>
     <string name="phone_number">Phone Number</string>
+    <string name="phone_number_button">SELECT A CONTACT</string>
     <string name="location_distance">Distance (in Meters)</string>
     <string name="location_label">Get Location</string>
     <string name="location_button">Fetch</string>

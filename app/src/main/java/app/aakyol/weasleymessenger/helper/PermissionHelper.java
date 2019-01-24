@@ -1,5 +1,6 @@
 package app.aakyol.weasleymessenger.helper;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -25,11 +26,12 @@ public class PermissionHelper {
      */
     public static boolean checkPermissions(final Activity activity, final Context context) {
         return checkIfLocationPermissionGranted(activity, context)
-                && checkIfSMSPermissionGranted(activity, context);
+                && checkIfSMSPermissionGranted(activity, context)
+                && checkIfReadContactPermissionGranted(activity, context);
     }
 
     /**
-     * Checks if its alloved to use the fine location service
+     * Checks if its allowed to use the fine location service
      * @return
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -51,7 +53,7 @@ public class PermissionHelper {
     }
 
     /**
-     * Checks if its alloved to use the sms sending functionality
+     * Checks if its allowed to use the sms sending functionality
      * @return
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -69,6 +71,29 @@ public class PermissionHelper {
         }
         else { // On API < 23, the permissions are informed to the user during installation
             Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for SMS sending is granted");
+            return true;
+        }
+    }
+
+    /**
+     * Checks if its allowed to use the sms sending functionality
+     * @return
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private static boolean checkIfReadContactPermissionGranted(final Activity activity, final Context context) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for reading contacts sending is granted");
+                return true;
+            } else {
+
+                Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for reading contacts sending is revoked");
+                return false;
+            }
+        }
+        else { // On API < 23, the permissions are informed to the user during installation
+            Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for reading contacts sending is granted");
             return true;
         }
     }
