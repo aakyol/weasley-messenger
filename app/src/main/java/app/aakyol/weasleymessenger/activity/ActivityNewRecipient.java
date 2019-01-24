@@ -97,7 +97,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 }
                 else if(Objects.nonNull(locationForRecipientMessage)) {
                     Location lastLocation = locationForRecipientMessage.getLastLocation();
-                    dbHelper.addRecipient(alias, phoneNo, message, distance, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
+                    dbHelper.addRecipient(alias, name, phoneNo, message, distance, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString() + "\" is  saved.");
                     finish();

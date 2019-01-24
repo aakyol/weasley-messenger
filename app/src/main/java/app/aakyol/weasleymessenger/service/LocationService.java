@@ -43,8 +43,8 @@ public class LocationService extends Service {
 
     private LocationRequest locationRequest;
 
-    private long UPDATE_INTERVAL = 60 * 1000;
-    private long FASTEST_INTERVAL = 30 * 1000;
+    private long UPDATE_INTERVAL = 15 * 60 * 1000;
+    private long FASTEST_INTERVAL = 10 * 60 * 1000;
 
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
@@ -106,7 +106,7 @@ public class LocationService extends Service {
                                 float[] distance = new float[1];
                                 Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
                                 if (!AppResources.sentList.contains(recipient.getAlias()) && distance[0] < recipient.getDistance()) {
-                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getAlias() + "\". " +
+                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getName() + "\". " +
                                             "Distance to location for accuracy: " + distance[0]);
                                     try {
                                         outputStreamWriter = new OutputStreamWriter(locationServiceContext.openFileOutput("weasley_service_logs.txt", Context.MODE_APPEND));
