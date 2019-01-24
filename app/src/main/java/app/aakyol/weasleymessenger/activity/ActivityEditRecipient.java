@@ -211,4 +211,5 @@ public class ActivityEditRecipient extends AppCompatActivity {
             selectedContact = new ContactModel(name, phoneNo);
         }
     }
+
 }

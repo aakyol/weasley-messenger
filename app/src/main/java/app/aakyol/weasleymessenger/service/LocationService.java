@@ -2,6 +2,7 @@ package app.aakyol.weasleymessenger.service;
 
 import android.Manifest;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import java.util.Objects;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.helper.MessageHelper;
+import app.aakyol.weasleymessenger.helper.NotificationHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
 
@@ -48,6 +50,7 @@ public class LocationService extends Service {
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
     private OutputStreamWriter outputStreamWriter;
+    private PendingIntent pendingIntent;
 
     @Nullable
     @Override
@@ -59,12 +62,20 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = new Notification();
         locationServiceContext = this;
+
         if(Objects.isNull(AppResources.sentList)) {
             AppResources.sentList = new HashSet<>();
         }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationHelper.createNotificationChannel(locationServiceContext);
+
         startLocationUpdates();
         startForeground(0, notification);
         AppResources.isLocationServiceRunning = true;
+
         return START_STICKY;
     }
 
@@ -116,6 +127,7 @@ public class LocationService extends Service {
                                         Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"File writer failed to write.");
                                     }
                                     MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
+                                    NotificationHelper.sendNotificationToDevice("The message with alias " + recipient.getAlias() + " is sent.", locationServiceContext, pendingIntent);
                                     AppResources.sentList.add(recipient.getAlias());
                                 } else if (distance[0] >= recipient.getDistance() && AppResources.sentList.contains(recipient.getAlias())) {
                                     AppResources.sentList.remove(recipient.getAlias());

@@ -4,14 +4,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher2"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/CustomActionBarTheme">
         <activity
             android:name=".activity.ActivityListRecipients"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
+            android:theme="@style/CustomActionBarTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
         <activity
             android:name=".activity.ActivityNewRecipient"
             android:label="@string/new_recipient_activity_name"
-            android:theme="@style/AppTheme"
+            android:theme="@style/CustomActionBarTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
         <activity
             android:name=".activity.ActivityEditRecipient"
             android:label="@string/edit_recipient_activity_name"
-            android:theme="@style/AppTheme"
+            android:theme="@style/CustomActionBarTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
