@@ -71,6 +71,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
             finish();
         }
 
+        selectedContact = new ContactModel(recipient.getName(), recipient.getPhoneNumber());
+
         final EditText aliasText = findViewById(R.id.edit_recipient_alias_input);
         aliasText.setText(recipient.getAlias());
 
