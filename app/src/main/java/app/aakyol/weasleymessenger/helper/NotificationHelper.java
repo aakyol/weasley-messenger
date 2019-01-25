@@ -27,6 +27,16 @@ public class NotificationHelper {
         }
     }
 
+    public static NotificationCompat.Builder buildNotification(final String notificationText, final Context context, final PendingIntent pendingIntent) {
+        return new NotificationCompat.Builder(context, AppResources.WEASLEY_SERVICE_NOTIFICATION_ID)
+                .setSmallIcon(R.drawable.ic_stat_name)
+                .setContentTitle(AppResources.WEASLEY_SERVICE_NAME)
+                .setContentText(notificationText)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+    }
+
     /**
      * Notification sender
      * @param notificationText
@@ -34,15 +44,7 @@ public class NotificationHelper {
      * @param pendingIntent
      */
     public static void sendNotificationToDevice(final String notificationText, final Context context, final PendingIntent pendingIntent) {
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, AppResources.WEASLEY_SERVICE_NOTIFICATION_ID)
-                .setSmallIcon(R.drawable.ic_stat_name)
-                .setContentTitle(AppResources.WEASLEY_SERVICE_NAME)
-                .setContentText(notificationText)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(0, buildNotification(notificationText, context, pendingIntent).build());
     }
 }

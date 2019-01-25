@@ -27,7 +27,8 @@ public class PermissionHelper {
     public static boolean checkPermissions(final Activity activity, final Context context) {
         return checkIfLocationPermissionGranted(activity, context)
                 && checkIfSMSPermissionGranted(activity, context)
-                && checkIfReadContactPermissionGranted(activity, context);
+                && checkIfReadContactPermissionGranted(activity, context)
+                && checkIfForegroundServicePermissionGranted(activity, context);
     }
 
     /**
@@ -94,6 +95,28 @@ public class PermissionHelper {
         }
         else { // On API < 23, the permissions are informed to the user during installation
             Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for reading contacts sending is granted");
+            return true;
+        }
+    }
+    /**
+     * Checks if its allowed to launch a foreground service
+     * @return
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private static boolean checkIfForegroundServicePermissionGranted(final Activity activity, final Context context) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(context, Manifest.permission.FOREGROUND_SERVICE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for launching foreground services is granted");
+                return true;
+            } else {
+
+                Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for launching foreground services is revoked");
+                return false;
+            }
+        }
+        else { // On API < 23, the permissions are informed to the user during installation
+            Log.d(AppResources.HelperConstants.PermissionHelperConstant.LOG_TAG_PERMISSION,"Permission for launching foreground services is granted");
             return true;
         }
     }

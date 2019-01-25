@@ -58,7 +58,12 @@ public class ActivityNewRecipient extends AppCompatActivity {
         selectContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContactList(v);
+                try {
+                    getContactList(v);
+                }
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 

@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import app.aakyol.weasleymessenger.helper.MessageHelper;
 import app.aakyol.weasleymessenger.helper.NotificationHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
@@ -60,20 +61,24 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Notification notification = new Notification();
         locationServiceContext = this;
+        NotificationHelper.createNotificationChannel(locationServiceContext);
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        startForeground(
+                101,
+                NotificationHelper.buildNotification("Weasley Helper is working, busy as a lacewing fly.",
+                                                      locationServiceContext,pendingIntent
+                ).build()
+        );
 
         if(Objects.isNull(AppResources.sentList)) {
             AppResources.sentList = new HashSet<>();
         }
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationHelper.createNotificationChannel(locationServiceContext);
-
         startLocationUpdates();
-        startForeground(0, notification);
         AppResources.isLocationServiceRunning = true;
 
         return START_STICKY;
