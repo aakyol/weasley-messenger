@@ -2,17 +2,15 @@ package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -104,7 +102,8 @@ public class ActivityListRecipients extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.SEND_SMS,
-                Manifest.permission.READ_CONTACTS
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.FOREGROUND_SERVICE
         }, 1);
     }
 

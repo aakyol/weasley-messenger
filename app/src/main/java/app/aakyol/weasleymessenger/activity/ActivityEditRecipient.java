@@ -1,6 +1,5 @@
 package app.aakyol.weasleymessenger.activity;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -71,6 +70,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
                     "An error occured. Please contact the app author with this error code: E0005");
             finish();
         }
+
+        selectedContact = new ContactModel(recipient.getName(), recipient.getPhoneNumber());
 
         final EditText aliasText = findViewById(R.id.edit_recipient_alias_input);
         aliasText.setText(recipient.getAlias());
@@ -212,4 +213,5 @@ public class ActivityEditRecipient extends AppCompatActivity {
             selectedContact = new ContactModel(name, phoneNo);
         }
     }
+
 }
