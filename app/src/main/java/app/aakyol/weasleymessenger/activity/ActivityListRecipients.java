@@ -118,9 +118,10 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         List<RecipientModel> recipients = dbHelper.getAllRecipients();
         AppResources.currentRecipientList = recipients;
-        ArrayAdapter adapter = new ArrayAdapter<RecipientModel>(this,
-                R.layout.activity_list_recipient_layout, recipients);
-
+        ArrayAdapter adapter = new ArrayAdapter<>(this,
+                R.layout.activity_list_recipient_layout,
+                R.id.listview_alias,
+                recipients);
 
         listView.setAdapter(adapter);
     }
