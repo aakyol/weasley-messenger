@@ -44,8 +44,8 @@ public class LocationService extends Service {
 
     private LocationRequest locationRequest;
 
-    private long UPDATE_INTERVAL = /*15 **/ 60 * 1000;
-    private long FASTEST_INTERVAL = /*10 **/ 60 * 1000;
+    private long UPDATE_INTERVAL = 15 * 60 * 1000;
+    private long FASTEST_INTERVAL = 10 * 60 * 1000;
 
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
