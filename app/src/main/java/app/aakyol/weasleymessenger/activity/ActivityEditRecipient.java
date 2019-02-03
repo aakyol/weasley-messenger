@@ -121,8 +121,8 @@ public class ActivityEditRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String alias = ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString();
-                final String name = selectedContact.getName();
-                final String phoneNo = selectedContact.getPhoneNo();
+                final String name = Objects.nonNull(selectedContact) ? selectedContact.getName() : "";
+                final String phoneNo = Objects.nonNull(selectedContact) ? selectedContact.getPhoneNo() : "";
                 final String message = ((EditText) findViewById(R.id.edit_message_to_be_sent_input)).getText().toString();
                 final String distance = ((EditText) findViewById(R.id.edit_location_distance_input)).getText().toString();
                 String latitude;
@@ -130,6 +130,10 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
+                }
+                else if(AppResources.currentRecipients.isRecipientWithAliasExists(alias)) {
+                    SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
+                            "This alias exists. Alias must be unique.");
                 }
                 else {
                     if (Objects.isNull(locationForRecipientMessage)) {
@@ -159,7 +163,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                             case DialogInterface.BUTTON_POSITIVE:
                                 dialog.dismiss();
                                 dbHelper.deleteRecipient(recipientDBRowId);
-                                AppResources.sentList.remove(recipientAlias);
+                                AppResources.enabledRecipientList.remove(recipientAlias);
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                                         "Recipient \"" + recipientAlias + "\" is deleted.");
                                 finish();

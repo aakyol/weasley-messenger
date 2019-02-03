@@ -46,6 +46,19 @@ public class AppResources {
 
     public static Boolean isLocationServiceRunning;
     public static LocationResult currentLocation;
-    public static List<RecipientModel> currentRecipientList;
-    public static Set<String> sentList;
+    public static Set<String> enabledRecipientList;
+
+    public static class currentRecipients {
+
+        public static List<RecipientModel> currentRecipientList;
+
+        public static boolean isRecipientWithAliasExists(final String alias) {
+            for(RecipientModel recipient : currentRecipientList) {
+                if(recipient.getAlias().equals(alias)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }

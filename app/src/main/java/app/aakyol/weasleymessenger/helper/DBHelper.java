@@ -41,7 +41,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DBEntry.TABLE_NAME + " (" +
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_ALIAS + " TEXT," +
+                    DBEntry.COLUMN_NAME_RECPIPENT_ALIAS + " TEXT UNIQUE," +
                     DBEntry.COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_PHONE + " TEXT," +
                     DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
