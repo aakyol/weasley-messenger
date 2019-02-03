@@ -92,13 +92,17 @@ public class ActivityNewRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String alias = ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString();
-                final String name = selectedContact.getName();
-                final String phoneNo = selectedContact.getPhoneNo();
+                final String name = Objects.nonNull(selectedContact) ? selectedContact.getName() : "";
+                final String phoneNo = Objects.nonNull(selectedContact) ? selectedContact.getPhoneNo() : "";
                 final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
                 final String distance = ((EditText) findViewById(R.id.location_distance_input)).getText().toString();
                 if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
+                }
+                else if(AppResources.currentRecipients.isRecipientWithAliasExists(alias)) {
+                    SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
+                            "This alias exists. Alias must be unique.");
                 }
                 else if(Objects.nonNull(locationForRecipientMessage)) {
                     Location lastLocation = locationForRecipientMessage.getLastLocation();

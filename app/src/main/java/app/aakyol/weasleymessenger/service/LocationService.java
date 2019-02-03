@@ -1,7 +1,6 @@
 package app.aakyol.weasleymessenger.service;
 
 import android.Manifest;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -22,13 +21,13 @@ import com.google.android.gms.location.SettingsClient;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import app.aakyol.weasleymessenger.helper.MessageHelper;
 import app.aakyol.weasleymessenger.helper.NotificationHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
@@ -45,8 +44,8 @@ public class LocationService extends Service {
 
     private LocationRequest locationRequest;
 
-    private long UPDATE_INTERVAL = 15 * 60 * 1000;
-    private long FASTEST_INTERVAL = 10 * 60 * 1000;
+    private long UPDATE_INTERVAL = /*15 **/ 60 * 1000;
+    private long FASTEST_INTERVAL = /*10 **/ 60 * 1000;
 
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
@@ -74,8 +73,8 @@ public class LocationService extends Service {
                 ).build()
         );
 
-        if(Objects.isNull(AppResources.sentList)) {
-            AppResources.sentList = new HashSet<>();
+        if(Objects.isNull(AppResources.enabledRecipientList)) {
+            AppResources.enabledRecipientList = new HashSet<>();
         }
 
         startLocationUpdates();
@@ -112,7 +111,7 @@ public class LocationService extends Service {
                         public void onLocationResult(LocationResult locationResult) {
                             Log.d(LOG_TAG_LOCATIONSERVICE, "Location fetched: " + locationResult.getLastLocation());
                             AppResources.currentLocation = locationResult;
-                            final List<RecipientModel> recipients = AppResources.currentRecipientList;
+                            final List<RecipientModel> recipients = AppResources.currentRecipients.currentRecipientList;
                             final double currentLatitude = locationResult.getLastLocation().getLatitude();
                             final double currentLongitude = locationResult.getLastLocation().getLongitude();
                             for (RecipientModel recipient : recipients) {
@@ -120,7 +119,7 @@ public class LocationService extends Service {
                                 final double recipientLongitude = recipient.getLongitude();
                                 float[] distance = new float[1];
                                 Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
-                                if (!AppResources.sentList.contains(recipient.getAlias()) && distance[0] < recipient.getDistance()) {
+                                if (AppResources.enabledRecipientList.contains(recipient.getAlias()) && distance[0] < recipient.getDistance()) {
                                     Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getName() + "\". " +
                                             "Distance to location for accuracy: " + distance[0]);
                                     try {
@@ -133,9 +132,9 @@ public class LocationService extends Service {
                                     }
                                     MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
                                     NotificationHelper.sendNotificationToDevice("The message with alias " + recipient.getAlias() + " is sent.", locationServiceContext, pendingIntent);
-                                    AppResources.sentList.add(recipient.getAlias());
-                                } else if (distance[0] >= recipient.getDistance() && AppResources.sentList.contains(recipient.getAlias())) {
-                                    AppResources.sentList.remove(recipient.getAlias());
+                                    AppResources.enabledRecipientList.remove(recipient.getAlias());
+                                } else if (distance[0] >= recipient.getDistance() && !AppResources.enabledRecipientList.contains(recipient.getAlias())) {
+                                    AppResources.enabledRecipientList.add(recipient.getAlias());
                                 }
                             }
                         }

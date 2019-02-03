@@ -8,13 +8,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import java.util.List;
 import java.util.Objects;
@@ -117,12 +121,35 @@ public class ActivityListRecipients extends AppCompatActivity {
         super.onResume();
 
         List<RecipientModel> recipients = dbHelper.getAllRecipients();
-        AppResources.currentRecipientList = recipients;
-        ArrayAdapter adapter = new ArrayAdapter<RecipientModel>(this,
-                R.layout.activity_list_recipient_layout, recipients);
-
+        AppResources.currentRecipients.currentRecipientList = recipients;
+        ArrayAdapter adapter = new ArrayAdapter<>(this,
+                R.layout.activity_list_recipient_layout,
+                R.id.listview_alias,
+                recipients);
 
         listView.setAdapter(adapter);
+
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0; i < listView.getChildCount(); i++) {
+                    final int index = i;
+                    ((Switch) listView.getChildAt(index).findViewById(R.id.listview_switch)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final String enabledRecipientAlias = dbHelper
+                                    .getAllRecipientsById(((RecipientModel) listView.getAdapter().getItem(index)).getDbID()).getAlias();
+                            if(((Switch) view).isChecked()){
+                                AppResources.enabledRecipientList.add(enabledRecipientAlias);
+                            }
+                            else {
+                                AppResources.enabledRecipientList.remove(enabledRecipientAlias);
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void checkIfPermissionsGranted() {
