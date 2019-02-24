@@ -40,6 +40,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:autofillHints="" />
 
 
@@ -124,6 +125,7 @@
             android:ems="10"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:autofillHints="" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -161,7 +163,8 @@
             android:autofillHints=""
             android:ems="10"
             android:inputType="numberDecimal"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
