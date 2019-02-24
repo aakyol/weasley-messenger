@@ -1,6 +1,7 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -43,6 +44,7 @@ public class ActivityListRecipients extends AppCompatActivity {
     private Intent locationServiceIntent;
     private Activity listRecipientActivity;
     private static Context listRecipientActivityContext;
+    private ActionBar actionBar;
 
     public static View listRecipientActivityViewObject;
     private ListView listView;
@@ -69,6 +71,8 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.recipient_list);
 
         listRecipientActivityViewObject = findViewById(android.R.id.content);
+
+        actionBar = getActionBar();
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
@@ -195,7 +199,9 @@ public class ActivityListRecipients extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings_button) {
+            Intent newSettingsIntent = new Intent(listRecipientActivityContext, ActivitySettings.class);
+            listRecipientActivity.startActivity(newSettingsIntent);
             return true;
         }
 

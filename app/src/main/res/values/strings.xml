@@ -10,7 +10,10 @@
     <string name="location_distance">Distance (in Meters)</string>
     <string name="location_label">Get Location</string>
     <string name="location_button">Fetch</string>
+    <string name="location_refresh_rate">Location Refresh Rate (in Minutes)</string>
+    <string name="location_accuracy">Location Accuracy</string>
     <string name="save_recipient_button">SAVE</string>
     <string name="back_recipient_button">BACK</string>
     <string name="delete_recipient_button">DELETE</string>
+    <string name="action_about">About</string>
 </resources>
