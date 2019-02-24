@@ -41,7 +41,6 @@ import static app.aakyol.weasleymessenger.resource.AppResources.LogConstans.AppL
 
 public class ActivityListRecipients extends AppCompatActivity {
 
-    private Intent locationServiceIntent;
     private Activity listRecipientActivity;
     private static Context listRecipientActivityContext;
     private ActionBar actionBar;
@@ -80,7 +79,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         dbHelper = appComponent.getDBHelper();
 
         if(Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
-            locationServiceIntent = new Intent(this, LocationService.class);
+            AppResources.locationServiceIntent = new Intent(this, LocationService.class);
             requestPermissions();
         }
         else {
@@ -180,7 +179,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                     .setNegativeButton("No", dialogClickListener).show();
         }
         else {
-            startForegroundService(locationServiceIntent);
+            startForegroundService(AppResources.locationServiceIntent);
         }
     }
 
