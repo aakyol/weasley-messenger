@@ -22,6 +22,7 @@ import app.aakyol.weasleymessenger.AppModule;
 import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
+import app.aakyol.weasleymessenger.helper.LoadingSpinnerHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.ContactModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
@@ -106,9 +107,11 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 }
                 else if(Objects.nonNull(locationForRecipientMessage)) {
                     Location lastLocation = locationForRecipientMessage.getLastLocation();
+                    LoadingSpinnerHelper.setSpinnerVisible();
                     dbHelper.addRecipient(alias, name, phoneNo, message, distance, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString() + "\" is  saved.");
+                    LoadingSpinnerHelper.setSpinnerGone();
                     finish();
                 }
                 else {
@@ -117,6 +120,14 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LoadingSpinnerHelper.setSpinnerGone();
+        LoadingSpinnerHelper.setLoadingSpinner(this);
     }
 
     @Override

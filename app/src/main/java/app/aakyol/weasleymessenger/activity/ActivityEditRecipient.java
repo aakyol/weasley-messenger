@@ -24,6 +24,7 @@ import app.aakyol.weasleymessenger.AppModule;
 import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
+import app.aakyol.weasleymessenger.helper.LoadingSpinnerHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.ContactModel;
 import app.aakyol.weasleymessenger.model.RecipientModel;
@@ -63,7 +64,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
 
         recipientDBRowId = (int) getIntent().getExtras().get(RECIPIENT_ID);
         if(recipientDBRowId != -1) {
-            recipient = dbHelper.getAllRecipientsById(recipientDBRowId);;
+            recipient = dbHelper.getAllRecipientsById(recipientDBRowId);
         }
         else {
             SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
@@ -143,7 +144,9 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         latitude = Double.toString(locationForRecipientMessage.getLastLocation().getLatitude());
                         longitude =  Double.toString(locationForRecipientMessage.getLastLocation().getLongitude());
                     }
+                    LoadingSpinnerHelper.setSpinnerVisible();
                     dbHelper.updateRecipient(recipientDBRowId, alias, name, phoneNo, message, distance, latitude, longitude);
+                    LoadingSpinnerHelper.setSpinnerGone();
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString() + "\" is saved.");
                     finish();
@@ -162,7 +165,9 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 dialog.dismiss();
+                                LoadingSpinnerHelper.setSpinnerVisible();
                                 dbHelper.deleteRecipient(recipientDBRowId);
+                                LoadingSpinnerHelper.setSpinnerGone();
                                 AppResources.enabledRecipientList.remove(recipientAlias);
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                                         "Recipient \"" + recipientAlias + "\" is deleted.");
@@ -180,6 +185,14 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LoadingSpinnerHelper.setSpinnerGone();
+        LoadingSpinnerHelper.setLoadingSpinner(this);
     }
 
     @Override

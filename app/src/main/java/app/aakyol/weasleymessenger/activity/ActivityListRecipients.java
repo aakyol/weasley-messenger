@@ -19,17 +19,21 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.AppComponent;
 import app.aakyol.weasleymessenger.AppModule;
 import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
+import app.aakyol.weasleymessenger.helper.LoadingSpinnerHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
@@ -87,6 +91,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LoadingSpinnerHelper.setSpinnerVisible();
                 Intent newRecipientIntent = new Intent(listRecipientActivityContext, ActivityNewRecipient.class);
                 listRecipientActivity.startActivity(newRecipientIntent);
             }
@@ -95,6 +100,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LoadingSpinnerHelper.setSpinnerVisible();
                 Intent editRecipientIntent = new Intent(listRecipientActivityContext, ActivityEditRecipient.class);
                 editRecipientIntent.putExtra(ActivityEditRecipient.RECIPIENT_ID, ((RecipientModel) parent.getAdapter().getItem(position)).getDbID());
                 listRecipientActivity.startActivity(editRecipientIntent);
@@ -128,6 +134,8 @@ public class ActivityListRecipients extends AppCompatActivity {
                 recipients);
 
         listView.setAdapter(adapter);
+
+        LoadingSpinnerHelper.setLoadingSpinner(this);
 
         listView.post(new Runnable() {
             @Override

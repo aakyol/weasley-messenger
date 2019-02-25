@@ -1,5 +1,7 @@
 package app.aakyol.weasleymessenger.resource;
 
+import android.widget.ProgressBar;
+
 import com.google.android.gms.location.LocationResult;
 
 import java.util.List;
