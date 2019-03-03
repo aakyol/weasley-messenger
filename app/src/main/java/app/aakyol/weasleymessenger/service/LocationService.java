@@ -44,8 +44,8 @@ public class LocationService extends Service {
 
     private LocationRequest locationRequest;
 
-    private long UPDATE_INTERVAL = AppResources.WEASLEY_SERVICE_LOCATION_UPDATE_INTERVAL;
-    private long FASTEST_INTERVAL = AppResources.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL;
+    private long UPDATE_INTERVAL;
+    private long FASTEST_INTERVAL;
 
     private Handler locationHandler = new Handler();
     private Context locationServiceContext;
@@ -65,6 +65,9 @@ public class LocationService extends Service {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        UPDATE_INTERVAL = AppResources.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL * 2;
+        FASTEST_INTERVAL = AppResources.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL;
 
         startForeground(
                 101,
@@ -90,7 +93,15 @@ public class LocationService extends Service {
             public void run() {
                 // Create the location request to start receiving updates
                 locationRequest = new LocationRequest();
-                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                if(AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY.equals("HIGH")) {
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                }
+                else if(AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY.equals("MEDIUM")) {
+                    locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                }
+                else {
+                    locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+                }
                 locationRequest.setInterval(UPDATE_INTERVAL);
                 locationRequest.setFastestInterval(FASTEST_INTERVAL);
 

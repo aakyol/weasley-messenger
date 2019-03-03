@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.validator.RecipientValidator;
+import app.aakyol.weasleymessenger.validator.SettingsValidator;
 import dagger.Component;
 
 @Singleton
@@ -12,4 +13,5 @@ public interface AppComponent {
 
     DBHelper getDBHelper();
     RecipientValidator getRecipientValidator();
+    SettingsValidator getSettingsValidator();
 }
