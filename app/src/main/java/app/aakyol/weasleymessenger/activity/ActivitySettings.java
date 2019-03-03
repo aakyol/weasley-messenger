@@ -13,6 +13,7 @@ import app.aakyol.weasleymessenger.AppComponent;
 import app.aakyol.weasleymessenger.AppModule;
 import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
+import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.validator.SettingsValidator;
@@ -21,6 +22,7 @@ public class ActivitySettings extends AppCompatActivity {
 
     private AppComponent appComponent;
     private SettingsValidator settingsValidator;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class ActivitySettings extends AppCompatActivity {
                 .appModule(new AppModule())
                 .build();
         settingsValidator = appComponent.getSettingsValidator();
+        dbHelper = appComponent.getDBHelper();
 
         final Spinner accuracySpinner = (Spinner) findViewById(R.id.location_accuracy_dropdown);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -38,7 +41,7 @@ public class ActivitySettings extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accuracySpinner.setAdapter(adapter);
 
-        Button serviceButon = (Button) findViewById(R.id.service_button);
+        final Button serviceButon = (Button) findViewById(R.id.service_button);
         if(AppResources.isLocationServiceRunning) {
             serviceButon.setText(R.string.stop_location_service);
         }
@@ -50,9 +53,11 @@ public class ActivitySettings extends AppCompatActivity {
             public void onClick(View view) {
                 if(AppResources.isLocationServiceRunning) {
                     stopService(AppResources.locationServiceIntent);
+                    serviceButon.setText(R.string.start_location_service);
                 }
                 else {
                     startForegroundService(AppResources.locationServiceIntent);
+                    serviceButon.setText(R.string.stop_location_service);
                 }
             }
         });
@@ -78,6 +83,15 @@ public class ActivitySettings extends AppCompatActivity {
                 else {
                     SnackbarHelper.printLongSnackbarMessage(view, "No setting is changed. You can leave the settings page via the back button.");
                 }
+            }
+        });
+
+        Button deleteAllRecipientsButton = (Button) findViewById(R.id.delete_all_contacts_button);
+        deleteAllRecipientsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbHelper.deleteAllRecipients();
+                SnackbarHelper.printLongSnackbarMessage(view, "All contacts deleted. You may leave the settings page via the back button.");
             }
         });
     }

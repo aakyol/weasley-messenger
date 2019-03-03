@@ -179,6 +179,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public int deleteAllRecipients() {
+        SQLiteDatabase db =  this.getWritableDatabase();
+        int result = db.delete(
+                DBHelper.DBEntry.TABLE_NAME,
+                "1",
+                new String[] {}
+        );
+        db.close();
+        return result;
+    }
+
     private ContentValues provideValueObject(final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS, alias);
