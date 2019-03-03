@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="app.aakyol.weasleymessenger.activity.ActivityListRecipients">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_settings_button"
         android:orderInCategory="100"
         android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about_button"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
         app:showAsAction="never" />
 </menu>

@@ -1,6 +1,7 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -40,9 +41,9 @@ import static app.aakyol.weasleymessenger.resource.AppResources.LogConstans.AppL
 
 public class ActivityListRecipients extends AppCompatActivity {
 
-    private Intent locationServiceIntent;
     private Activity listRecipientActivity;
     private static Context listRecipientActivityContext;
+    private ActionBar actionBar;
 
     public static View listRecipientActivityViewObject;
     private ListView listView;
@@ -70,13 +71,15 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         listRecipientActivityViewObject = findViewById(android.R.id.content);
 
+        actionBar = getActionBar();
+
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
 
         if(Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
-            locationServiceIntent = new Intent(this, LocationService.class);
+            AppResources.locationServiceIntent = new Intent(this, LocationService.class);
             requestPermissions();
         }
         else {
@@ -176,7 +179,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                     .setNegativeButton("No", dialogClickListener).show();
         }
         else {
-            startForegroundService(locationServiceIntent);
+            startForegroundService(AppResources.locationServiceIntent);
         }
     }
 
@@ -195,7 +198,9 @@ public class ActivityListRecipients extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings_button) {
+            Intent newSettingsIntent = new Intent(listRecipientActivityContext, ActivitySettings.class);
+            listRecipientActivity.startActivity(newSettingsIntent);
             return true;
         }
 

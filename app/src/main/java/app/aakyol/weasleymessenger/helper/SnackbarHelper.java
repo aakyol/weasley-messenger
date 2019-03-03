@@ -2,7 +2,6 @@ package app.aakyol.weasleymessenger.helper;
 
 import android.view.View;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 public class SnackbarHelper {
@@ -15,7 +14,7 @@ public class SnackbarHelper {
     public static void printShortSnackbarMessage(final View activityViewObject, final String message) {
         Snackbar.make(activityViewObject,
                 message,
-                BaseTransientBottomBar.LENGTH_SHORT).setAction("Location: ", null).show();
+                Snackbar.LENGTH_LONG).setAction("Location: ", null).show();
     }
 
     /**
@@ -26,6 +25,6 @@ public class SnackbarHelper {
     public static void printLongSnackbarMessage(final View activityViewObject, final String message) {
         Snackbar.make(activityViewObject,
                 message,
-                BaseTransientBottomBar.LENGTH_LONG).setAction("Location: ", null).show();
+                Snackbar.LENGTH_LONG).setAction("Location: ", null).show();
     }
 }
