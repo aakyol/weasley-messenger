@@ -2,7 +2,6 @@ package app.aakyol.weasleymessenger.resource;
 
 import android.content.Intent;
 
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
 import java.util.List;
@@ -51,6 +50,8 @@ public class AppResources {
     public static Intent locationServiceIntent;
 
     public static Boolean isLocationServiceRunning;
+    public static Boolean isLocationServiceManuallySwitched = false;
+
     public static LocationResult currentLocation;
     public static Set<String> enabledRecipientList;
 

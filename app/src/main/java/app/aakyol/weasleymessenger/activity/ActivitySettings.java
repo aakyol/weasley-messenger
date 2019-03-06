@@ -14,6 +14,7 @@ import app.aakyol.weasleymessenger.AppModule;
 import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
+import app.aakyol.weasleymessenger.helper.LoadingSpinnerHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.resource.AppResources;
 import app.aakyol.weasleymessenger.validator.SettingsValidator;
@@ -35,6 +36,8 @@ public class ActivitySettings extends AppCompatActivity {
         settingsValidator = appComponent.getSettingsValidator();
         dbHelper = appComponent.getDBHelper();
 
+        LoadingSpinnerHelper.setSpinnerGone();
+
         final Spinner accuracySpinner = (Spinner) findViewById(R.id.location_accuracy_dropdown);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.accuracy_array, android.R.layout.simple_spinner_item);
@@ -51,6 +54,9 @@ public class ActivitySettings extends AppCompatActivity {
         serviceButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!AppResources.isLocationServiceManuallySwitched) {
+                    AppResources.isLocationServiceManuallySwitched = true;
+                }
                 if(AppResources.isLocationServiceRunning) {
                     stopService(AppResources.locationServiceIntent);
                     serviceButon.setText(R.string.start_location_service);
@@ -95,4 +101,6 @@ public class ActivitySettings extends AppCompatActivity {
             }
         });
     }
+
+
 }

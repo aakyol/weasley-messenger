@@ -20,17 +20,21 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.AppComponent;
 import app.aakyol.weasleymessenger.AppModule;
 import app.aakyol.weasleymessenger.DaggerAppComponent;
 import app.aakyol.weasleymessenger.R;
 import app.aakyol.weasleymessenger.helper.DBHelper;
+import app.aakyol.weasleymessenger.helper.LoadingSpinnerHelper;
 import app.aakyol.weasleymessenger.helper.PermissionHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.model.RecipientModel;
@@ -78,18 +82,27 @@ public class ActivityListRecipients extends AppCompatActivity {
                 .build();
         dbHelper = appComponent.getDBHelper();
 
-        if(Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
-            AppResources.locationServiceIntent = new Intent(this, LocationService.class);
-            requestPermissions();
+        if(AppResources.isLocationServiceManuallySwitched) {
+            SnackbarHelper.printLongSnackbarMessage(
+                    listRecipientActivityViewObject,
+                    "The location service is manually started/stopped by you. " +
+                             "If it is stopped, you should go to the settings and start it manually " +
+                             "for the application to function properly.");
         }
         else {
-            Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
+            if (Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
+                AppResources.locationServiceIntent = new Intent(this, LocationService.class);
+                requestPermissions();
+            } else {
+                Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
+            }
         }
 
         Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LoadingSpinnerHelper.setSpinnerVisible();
                 Intent newRecipientIntent = new Intent(listRecipientActivityContext, ActivityNewRecipient.class);
                 listRecipientActivity.startActivity(newRecipientIntent);
             }
@@ -98,6 +111,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LoadingSpinnerHelper.setSpinnerVisible();
                 Intent editRecipientIntent = new Intent(listRecipientActivityContext, ActivityEditRecipient.class);
                 editRecipientIntent.putExtra(ActivityEditRecipient.RECIPIENT_ID, ((RecipientModel) parent.getAdapter().getItem(position)).getDbID());
                 listRecipientActivity.startActivity(editRecipientIntent);
@@ -131,6 +145,8 @@ public class ActivityListRecipients extends AppCompatActivity {
                 recipients);
 
         listView.setAdapter(adapter);
+
+        LoadingSpinnerHelper.setLoadingSpinner(this);
 
         listView.post(new Runnable() {
             @Override
@@ -199,6 +215,7 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings_button) {
+            LoadingSpinnerHelper.setSpinnerVisible();
             Intent newSettingsIntent = new Intent(listRecipientActivityContext, ActivitySettings.class);
             listRecipientActivity.startActivity(newSettingsIntent);
             return true;
