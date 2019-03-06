@@ -37,6 +37,15 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.ActivitySettings"
+            android:label="@string/action_settings"
+            android:theme="@style/CustomActionBarTheme"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.LocationService"
             android:label="Location Fetcher"

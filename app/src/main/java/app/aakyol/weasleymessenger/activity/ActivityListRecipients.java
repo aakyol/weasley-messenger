@@ -1,6 +1,7 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -44,9 +45,9 @@ import static app.aakyol.weasleymessenger.resource.AppResources.LogConstans.AppL
 
 public class ActivityListRecipients extends AppCompatActivity {
 
-    private Intent locationServiceIntent;
     private Activity listRecipientActivity;
     private static Context listRecipientActivityContext;
+    private ActionBar actionBar;
 
     public static View listRecipientActivityViewObject;
     private ListView listView;
@@ -74,17 +75,27 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         listRecipientActivityViewObject = findViewById(android.R.id.content);
 
+        actionBar = getActionBar();
+
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
 
-        if(Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
-            locationServiceIntent = new Intent(this, LocationService.class);
-            requestPermissions();
+        if(AppResources.isLocationServiceManuallySwitched) {
+            SnackbarHelper.printLongSnackbarMessage(
+                    listRecipientActivityViewObject,
+                    "The location service is manually started/stopped by you. " +
+                             "If it is stopped, you should go to the settings and start it manually " +
+                             "for the application to function properly.");
         }
         else {
-            Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
+            if (Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
+                AppResources.locationServiceIntent = new Intent(this, LocationService.class);
+                requestPermissions();
+            } else {
+                Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
+            }
         }
 
         Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
@@ -184,7 +195,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                     .setNegativeButton("No", dialogClickListener).show();
         }
         else {
-            startForegroundService(locationServiceIntent);
+            startForegroundService(AppResources.locationServiceIntent);
         }
     }
 
@@ -203,7 +214,10 @@ public class ActivityListRecipients extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings_button) {
+            LoadingSpinnerHelper.setSpinnerVisible();
+            Intent newSettingsIntent = new Intent(listRecipientActivityContext, ActivitySettings.class);
+            listRecipientActivity.startActivity(newSettingsIntent);
             return true;
         }
 
