@@ -28,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public static class DBEntry implements BaseColumns {
-        public static final String RECPIENT_TABLE_NAME = "recipients";
+        public static final String RECIPIENT_TABLE_NAME = "recipients";
         public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS = "alias";
         public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_NAME = "name";
         public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_PHONE = "phone";
@@ -39,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + DBEntry.RECPIENT_TABLE_NAME + " (" +
+            "CREATE TABLE " + DBEntry.RECIPIENT_TABLE_NAME + " (" +
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS + " TEXT UNIQUE," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
@@ -47,7 +47,11 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE + " TEXT," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE + " TEXT," +
-                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT)";
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT);"
+
+            +
+
+            "";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -73,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
         };
 
         Cursor cursor = db.query(
-                DBHelper.DBEntry.RECPIENT_TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 columns,
                 "1",
                 null,
@@ -119,7 +123,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] selectionArgs = { String.valueOf(rowId) };
 
         Cursor cursor = db.query(
-                DBHelper.DBEntry.RECPIENT_TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 columns,
                 selection,
                 selectionArgs,
@@ -147,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public long addRecipient(final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.insert(
-                DBHelper.DBEntry.RECPIENT_TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 null,
                 provideValueObject(alias, name, phoneNo, message, distance, latitude, longitude)
         );
@@ -158,7 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int updateRecipient(final int rowId, final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.update(
-                DBHelper.DBEntry.RECPIENT_TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 provideValueObject(alias, name, phoneNo, message, distance, latitude, longitude),
                 DBHelper.DBEntry._ID + " = ?",
                 new String[]{String.valueOf(rowId)}
@@ -171,7 +175,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int deleteRecipient(final int rowId) {
         SQLiteDatabase db =  this.getWritableDatabase();
         int result = db.delete(
-                DBHelper.DBEntry.RECPIENT_TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 DBHelper.DBEntry._ID + " = ?",
                 new String[] {String.valueOf(rowId)}
         );
@@ -182,7 +186,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int deleteAllRecipients() {
         SQLiteDatabase db =  this.getWritableDatabase();
         int result = db.delete(
-                DBHelper.DBEntry.RECPIENT_TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 "1",
                 new String[] {}
         );

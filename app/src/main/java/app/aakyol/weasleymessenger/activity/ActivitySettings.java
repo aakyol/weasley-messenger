@@ -58,11 +58,11 @@ public class ActivitySettings extends AppCompatActivity {
                     AppResources.isLocationServiceManuallySwitched = true;
                 }
                 if(AppResources.isLocationServiceRunning) {
-                    stopService(AppResources.locationServiceIntent);
+                    stopService(AppResources.WEASLEY_SERVICE_INTENT);
                     serviceButon.setText(R.string.start_location_service);
                 }
                 else {
-                    startForegroundService(AppResources.locationServiceIntent);
+                    startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
                     serviceButon.setText(R.string.stop_location_service);
                 }
             }
@@ -82,8 +82,8 @@ public class ActivitySettings extends AppCompatActivity {
                     if(!settingsValidator.ifAccuracyIsSame(inputAccuracy)) {
                         AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
                     }
-                    stopService(AppResources.locationServiceIntent);
-                    startForegroundService(AppResources.locationServiceIntent);
+                    stopService(AppResources.WEASLEY_SERVICE_INTENT);
+                    startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
                     finish();
                 }
                 else {
