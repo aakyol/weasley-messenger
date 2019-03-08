@@ -54,8 +54,8 @@ public class ActivitySettings extends AppCompatActivity {
         serviceButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!AppResources.isLocationServiceManuallySwitched) {
-                    AppResources.isLocationServiceManuallySwitched = true;
+                if(!AppResources.serviceSettings.WEALEY_SERVICE_IF_MANUALLY_STOPPED) {
+                    //TODO update boolean AppResources.serviceSettings.WEALEY_SERVICE_IF_MANUALLY_STOPPED
                 }
                 if(AppResources.isLocationServiceRunning) {
                     stopService(AppResources.WEASLEY_SERVICE_INTENT);
@@ -76,11 +76,11 @@ public class ActivitySettings extends AppCompatActivity {
                 final String inputAccuracy = accuracySpinner.getSelectedItem().toString();
                 if(!settingsValidator.ifAllFieldsAreEmpty(inputInterval, inputAccuracy)) {
                     if(!settingsValidator.ifIntervalIsEmpty(inputInterval)) {
-                        AppResources.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(inputInterval) * 60 * 1000
+                        AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(inputInterval) * 60 * 1000
                         ;
                     }
                     if(!settingsValidator.ifAccuracyIsSame(inputAccuracy)) {
-                        AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
+                        AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
                     }
                     stopService(AppResources.WEASLEY_SERVICE_INTENT);
                     startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);

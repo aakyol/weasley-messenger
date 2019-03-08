@@ -20,7 +20,7 @@ public class SettingsValidator {
     }
 
     public Boolean ifAccuracyIsSame(final String accuracy) {
-        return accuracy.equals(AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY);
+        return accuracy.equals(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY);
     }
 
 }

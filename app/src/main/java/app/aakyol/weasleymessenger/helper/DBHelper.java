@@ -15,6 +15,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import app.aakyol.weasleymessenger.model.RecipientModel;
+import app.aakyol.weasleymessenger.resource.AppResources;
 
 @Singleton
 public class DBHelper extends SQLiteOpenHelper {
@@ -36,9 +37,14 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE = "distance";
         public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE = "latitude";
         public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE = "longitude";
+
+        public static final String SERVICE_TABLE_NAME = "service_settings";
+        public static final String SERVICE_COLUMN_NAME_FASTEST_INTERVAL = "fastest_interval";
+        public static final String SERVICE_COLUMN_NAME_ACCURACY = "accuracy";
+        public static final String SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN = "manual_shutdown";
     }
 
-    private static final String SQL_CREATE_ENTRIES =
+    private static final String SQL_CREATE_RECIPIENT_ENTRIES =
             "CREATE TABLE " + DBEntry.RECIPIENT_TABLE_NAME + " (" +
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS + " TEXT UNIQUE," +
@@ -47,15 +53,19 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE + " TEXT," +
                     DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE + " TEXT," +
-                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT);"
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT)";
 
-            +
-
-            "";
+    private static final String SQL_CREATE_SETTINGS_ENTRIES =
+            "CREATE TABLE " + DBEntry.SERVICE_TABLE_NAME + " (" +
+                    DBEntry._ID + " INTEGER PRIMARY KEY," +
+                    DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL + " TEXT UNIQUE," +
+                    DBEntry.SERVICE_COLUMN_NAME_ACCURACY + " TEXT," +
+                    DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_RECIPIENT_ENTRIES);
+        db.execSQL(SQL_CREATE_SETTINGS_ENTRIES);
     }
 
     @Override
@@ -206,4 +216,93 @@ public class DBHelper extends SQLiteOpenHelper {
         return values;
     }
 
+    public boolean getServiceSettings() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = {
+                DBHelper.DBEntry._ID,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_ACCURACY,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN
+        };
+
+        Cursor cursor = db.query(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                columns,
+                "1",
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if(cursor.moveToNext()) {
+            AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(cursor.getString(1));
+            AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = cursor.getString(2);
+            AppResources.serviceSettings.WEALEY_SERVICE_IF_MANUALLY_STOPPED = Boolean.parseBoolean(cursor.getString(3));
+            cursor.close();
+            db.close();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public long addServiceSettings(final Long interval, final String accuracy, final Boolean isManuallyStopped) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL, interval);
+        values.put(DBEntry.SERVICE_COLUMN_NAME_ACCURACY, accuracy);
+        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped);
+        long result = db.insert(
+                DBEntry.SERVICE_TABLE_NAME,
+                null,
+                values
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateServiceIntervalSettings(final Long interval) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL, interval);
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(0)}
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateServiceAccuracySettings(final String accuracy) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_ACCURACY, accuracy);
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(0)}
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateServiceIsManuallyStoppedSettings(final Boolean isManuallyStopped) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped);
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(0)}
+        );
+        db.close();
+        return result;
+    }
 }

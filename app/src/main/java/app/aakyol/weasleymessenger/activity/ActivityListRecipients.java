@@ -60,9 +60,7 @@ public class ActivityListRecipients extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LoadingSpinnerHelper.setSpinnerVisible();
-        /*
-        TODO: Fetch location settings and set them in AppResources, if true, pop-up service start
-         */
+        dbHelper.getServiceSettings();
         LoadingSpinnerHelper.setSpinnerGone();
 
         super.onCreate(savedInstanceState);

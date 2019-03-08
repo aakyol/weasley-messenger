@@ -48,9 +48,11 @@ public class AppResources {
     public static final String WEASLEY_SERVICE_DESCRIPTION = "Weasley Helper message sending notification.";
     public static final String WEASLEY_SERVICE_NOTIFICATION_ID = "weasley_helper";
 
-    public static long WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = 10 * 60 * 1000;
-    public static String WEASLEY_SERVICE_LOCATION_ACCURACY = "HIGH";
-    public static Boolean isLocationServiceManuallyShutDown;
+    public static class serviceSettings {
+        public static long WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = 10 * 60 * 1000;
+        public static String WEASLEY_SERVICE_LOCATION_ACCURACY = "HIGH";
+        public static Boolean WEALEY_SERVICE_IF_MANUALLY_STOPPED;
+    }
 
     public static Boolean isLocationServiceRunning;
 
