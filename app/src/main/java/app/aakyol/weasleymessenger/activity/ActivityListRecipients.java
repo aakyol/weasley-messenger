@@ -9,25 +9,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import app.aakyol.weasleymessenger.AppComponent;
 import app.aakyol.weasleymessenger.AppModule;
@@ -47,7 +42,6 @@ public class ActivityListRecipients extends AppCompatActivity {
 
     private Activity listRecipientActivity;
     private static Context listRecipientActivityContext;
-    private ActionBar actionBar;
 
     public static View listRecipientActivityViewObject;
     private ListView listView;
@@ -65,6 +59,7 @@ public class ActivityListRecipients extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_recipients);
 
@@ -75,28 +70,23 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         listRecipientActivityViewObject = findViewById(android.R.id.content);
 
-        actionBar = getActionBar();
-
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule())
                 .build();
         dbHelper = appComponent.getDBHelper();
 
-        if(AppResources.isLocationServiceManuallySwitched) {
-            SnackbarHelper.printLongSnackbarMessage(
-                    listRecipientActivityViewObject,
-                    "The location service is manually started/stopped by you. " +
-                             "If it is stopped, you should go to the settings and start it manually " +
-                             "for the application to function properly.");
+        LoadingSpinnerHelper.setLoadingSpinner(this);
+        LoadingSpinnerHelper.setSpinnerVisible();
+        if(!dbHelper.getServiceSettings()) {
+            dbHelper.addServiceSettings(
+                    AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL,
+                    AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY,
+                    AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED
+            );
         }
-        else {
-            if (Objects.isNull(AppResources.isLocationServiceRunning) || !AppResources.isLocationServiceRunning) {
-                AppResources.locationServiceIntent = new Intent(this, LocationService.class);
-                requestPermissions();
-            } else {
-                Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
-            }
-        }
+        LoadingSpinnerHelper.setSpinnerGone();
+
+        requestPermissions();
 
         Button addRecipientButton = (Button) findViewById(R.id.add_recipient_button);
         addRecipientButton.setOnClickListener(new View.OnClickListener() {
@@ -146,8 +136,6 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         listView.setAdapter(adapter);
 
-        LoadingSpinnerHelper.setLoadingSpinner(this);
-
         listView.post(new Runnable() {
             @Override
             public void run() {
@@ -169,6 +157,8 @@ public class ActivityListRecipients extends AppCompatActivity {
                 }
             }
         });
+
+        dbHelper.getServiceSettings();
     }
 
     private void checkIfPermissionsGranted() {
@@ -180,7 +170,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                         requestPermissions();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
-                        SnackbarHelper.printLongSnackbarMessage(listRecipientActivityViewObject,
+                        SnackbarHelper.printLongSnackbarMessage(getView(),
                                 "Permission checks failed. The application will no longer" +
                                         "behave as expected. Please restart the application.");
                 }
@@ -194,8 +184,16 @@ public class ActivityListRecipients extends AppCompatActivity {
                     .setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();
         }
-        else {
-            startForegroundService(AppResources.locationServiceIntent);
+        else if (Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
+            Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
+
+        } else if(AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
+            SnackbarHelper.printLongSnackbarMessage(getView(),"Weasley Helper was manually stopped. To run it again, please go to the Settings and start the service manually.");
+        } else {
+            if(Objects.isNull(AppResources.WEASLEY_SERVICE_INTENT)) {
+                AppResources.WEASLEY_SERVICE_INTENT = new Intent(this, LocationService.class);
+            }
+            startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
         }
     }
 

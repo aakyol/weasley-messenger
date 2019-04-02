@@ -1,11 +1,14 @@
 package app.aakyol.weasleymessenger.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +20,7 @@ import app.aakyol.weasleymessenger.helper.DBHelper;
 import app.aakyol.weasleymessenger.helper.LoadingSpinnerHelper;
 import app.aakyol.weasleymessenger.helper.SnackbarHelper;
 import app.aakyol.weasleymessenger.resource.AppResources;
+import app.aakyol.weasleymessenger.service.LocationService;
 import app.aakyol.weasleymessenger.validator.SettingsValidator;
 
 public class ActivitySettings extends AppCompatActivity {
@@ -39,13 +43,17 @@ public class ActivitySettings extends AppCompatActivity {
         LoadingSpinnerHelper.setSpinnerGone();
 
         final Spinner accuracySpinner = (Spinner) findViewById(R.id.location_accuracy_dropdown);
+        final EditText intervalText = (EditText) findViewById(R.id.location_refresh_rate_input);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.accuracy_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accuracySpinner.setAdapter(adapter);
 
+        accuracySpinner.setSelection(adapter.getPosition(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY));
+        intervalText.setText(String.valueOf(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL / (60 * 1000)));
+
         final Button serviceButon = (Button) findViewById(R.id.service_button);
-        if(AppResources.isLocationServiceRunning) {
+        if(Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
             serviceButon.setText(R.string.stop_location_service);
         }
         else {
@@ -54,15 +62,20 @@ public class ActivitySettings extends AppCompatActivity {
         serviceButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!AppResources.isLocationServiceManuallySwitched) {
-                    AppResources.isLocationServiceManuallySwitched = true;
+                if(!AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
+                    AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = true;
+                    dbHelper.updateServiceIsManuallyStoppedSettings(true);
+
                 }
-                if(AppResources.isLocationServiceRunning) {
-                    stopService(AppResources.locationServiceIntent);
+                if(Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
+                    stopService(AppResources.WEASLEY_SERVICE_INTENT);
                     serviceButon.setText(R.string.start_location_service);
                 }
                 else {
-                    startForegroundService(AppResources.locationServiceIntent);
+                    if(Objects.isNull(AppResources.WEASLEY_SERVICE_INTENT)) {
+                        AppResources.WEASLEY_SERVICE_INTENT = new Intent(ActivityListRecipients.getContext(), LocationService.class);
+                    }
+                    startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
                     serviceButon.setText(R.string.stop_location_service);
                 }
             }
@@ -72,18 +85,26 @@ public class ActivitySettings extends AppCompatActivity {
         saveSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String inputInterval = ((EditText) findViewById(R.id.location_refresh_rate_input)).getText().toString();
+                final String inputInterval = intervalText.getText().toString();
                 final String inputAccuracy = accuracySpinner.getSelectedItem().toString();
+                boolean settingsChanged = false;
                 if(!settingsValidator.ifAllFieldsAreEmpty(inputInterval, inputAccuracy)) {
-                    if(!settingsValidator.ifIntervalIsEmpty(inputInterval)) {
-                        AppResources.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(inputInterval) * 60 * 1000
-                        ;
+                    if(!settingsValidator.ifIntervalIsSame(inputInterval)) {
+                        long newInterval = Long.valueOf(inputInterval) * 60 * 1000;
+                        AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = newInterval;
+                        dbHelper.updateServiceIntervalSettings(newInterval);
+                        settingsChanged = true;
                     }
                     if(!settingsValidator.ifAccuracyIsSame(inputAccuracy)) {
-                        AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
+                        AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
+                        dbHelper.updateServiceAccuracySettings(inputAccuracy);
+                        settingsChanged = true;
                     }
-                    stopService(AppResources.locationServiceIntent);
-                    startForegroundService(AppResources.locationServiceIntent);
+                    if(settingsChanged) {
+                        stopService(AppResources.WEASLEY_SERVICE_INTENT);
+                        startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
+                        SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.getView(), "Weasley Helper has been restarted to have the changes in effect.");
+                    }
                     finish();
                 }
                 else {

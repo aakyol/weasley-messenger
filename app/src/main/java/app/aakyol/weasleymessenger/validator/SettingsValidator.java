@@ -15,12 +15,12 @@ public class SettingsValidator {
         return (interval.isEmpty() && accuracy.isEmpty());
     }
 
-    public Boolean ifIntervalIsEmpty(final String interval) {
-        return interval.isEmpty();
+    public Boolean ifIntervalIsSame(final String interval) {
+        return interval.equals(String.valueOf(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL / (60 * 1000)));
     }
 
     public Boolean ifAccuracyIsSame(final String accuracy) {
-        return accuracy.equals(AppResources.WEASLEY_SERVICE_LOCATION_ACCURACY);
+        return accuracy.equals(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY);
     }
 
 }

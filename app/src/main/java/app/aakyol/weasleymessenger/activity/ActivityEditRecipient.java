@@ -68,7 +68,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         }
         else {
             SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
-                    "An error occured. Please contact the app author with this error code: E0005");
+                    "An error occured. Please contact the application's author with this error code: E-DB01");
             finish();
         }
 

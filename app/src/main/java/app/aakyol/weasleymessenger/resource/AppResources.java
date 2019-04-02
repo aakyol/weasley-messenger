@@ -42,15 +42,19 @@ public class AppResources {
 
     public static final int RESULT_PICK_CONTACT = 100;
 
+    public static Intent WEASLEY_SERVICE_INTENT;
+
     public static final String WEASLEY_SERVICE_NAME = "Weasley Helper";
     public static final String WEASLEY_SERVICE_DESCRIPTION = "Weasley Helper message sending notification.";
     public static final String WEASLEY_SERVICE_NOTIFICATION_ID = "weasley_helper";
-    public static long WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = 10 * 60 * 1000;
-    public static String WEASLEY_SERVICE_LOCATION_ACCURACY = "HIGH";
-    public static Intent locationServiceIntent;
+
+    public static class serviceSettings {
+        public static long WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = 10 * 60 * 1000;
+        public static String WEASLEY_SERVICE_LOCATION_ACCURACY = "HIGH";
+        public static Boolean WEASLEY_SERVICE_IF_MANUALLY_STOPPED = false;
+    }
 
     public static Boolean isLocationServiceRunning;
-    public static Boolean isLocationServiceManuallySwitched = false;
 
     public static LocationResult currentLocation;
     public static Set<String> enabledRecipientList;

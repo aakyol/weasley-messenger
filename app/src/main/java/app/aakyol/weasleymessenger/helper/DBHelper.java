@@ -15,12 +15,13 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import app.aakyol.weasleymessenger.model.RecipientModel;
+import app.aakyol.weasleymessenger.resource.AppResources;
 
 @Singleton
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "RecipientReader.db";
+    public static final String DATABASE_NAME = "WeasleyMessenger.db";
 
     @Inject
     public DBHelper(@Named("dbContext") Context context) {
@@ -28,30 +29,43 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public static class DBEntry implements BaseColumns {
-        public static final String TABLE_NAME = "recipients";
-        public static final String COLUMN_NAME_RECPIPENT_ALIAS = "alias";
-        public static final String COLUMN_NAME_RECPIPENT_NAME = "name";
-        public static final String COLUMN_NAME_RECPIPENT_PHONE = "phone";
-        public static final String COLUMN_NAME_RECPIPENT_MESSAGE = "message";
-        public static final String COLUMN_NAME_RECPIPENT_DISTANCE = "distance";
-        public static final String COLUMN_NAME_RECPIPENT_LATITUDE = "latitude";
-        public static final String COLUMN_NAME_RECPIPENT_LONGITUDE = "longitude";
+        public static final String RECIPIENT_TABLE_NAME = "recipients";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS = "alias";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_NAME = "name";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_PHONE = "phone";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE = "message";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE = "distance";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE = "latitude";
+        public static final String RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE = "longitude";
+
+        public static final String SERVICE_TABLE_NAME = "service_settings";
+        public static final String SERVICE_COLUMN_NAME_FASTEST_INTERVAL = "fastest_interval";
+        public static final String SERVICE_COLUMN_NAME_ACCURACY = "accuracy";
+        public static final String SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN = "manual_shutdown";
     }
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + DBEntry.TABLE_NAME + " (" +
+    private static final String SQL_CREATE_RECIPIENT_ENTRIES =
+            "CREATE TABLE " + DBEntry.RECIPIENT_TABLE_NAME + " (" +
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_ALIAS + " TEXT UNIQUE," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_PHONE + " TEXT," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE + " TEXT," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE + " TEXT," +
-                    DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT)";
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS + " TEXT UNIQUE," +
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_NAME + " TEXT," +
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_PHONE + " TEXT," +
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE + " TEXT," +
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE + " TEXT," +
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE + " TEXT," +
+                    DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE + " TEXT)";
+
+    private static final String SQL_CREATE_SETTINGS_ENTRIES =
+            "CREATE TABLE " + DBEntry.SERVICE_TABLE_NAME + " (" +
+                    DBEntry._ID + " INTEGER PRIMARY KEY," +
+                    DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL + " TEXT UNIQUE," +
+                    DBEntry.SERVICE_COLUMN_NAME_ACCURACY + " TEXT," +
+                    DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_RECIPIENT_ENTRIES);
+        db.execSQL(SQL_CREATE_SETTINGS_ENTRIES);
     }
 
     @Override
@@ -63,17 +77,17 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = {
                 DBHelper.DBEntry._ID,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_NAME,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_PHONE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE
         };
 
         Cursor cursor = db.query(
-                DBHelper.DBEntry.TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 columns,
                 "1",
                 null,
@@ -106,20 +120,20 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String[] columns = {
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE,
-                DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_NAME,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_PHONE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE,
+                DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE
         };
 
         String selection = DBHelper.DBEntry._ID + " = ?";
         String[] selectionArgs = { String.valueOf(rowId) };
 
         Cursor cursor = db.query(
-                DBHelper.DBEntry.TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 columns,
                 selection,
                 selectionArgs,
@@ -147,7 +161,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public long addRecipient(final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.insert(
-                DBHelper.DBEntry.TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 null,
                 provideValueObject(alias, name, phoneNo, message, distance, latitude, longitude)
         );
@@ -158,7 +172,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int updateRecipient(final int rowId, final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.update(
-                DBHelper.DBEntry.TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 provideValueObject(alias, name, phoneNo, message, distance, latitude, longitude),
                 DBHelper.DBEntry._ID + " = ?",
                 new String[]{String.valueOf(rowId)}
@@ -171,7 +185,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int deleteRecipient(final int rowId) {
         SQLiteDatabase db =  this.getWritableDatabase();
         int result = db.delete(
-                DBHelper.DBEntry.TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 DBHelper.DBEntry._ID + " = ?",
                 new String[] {String.valueOf(rowId)}
         );
@@ -182,7 +196,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int deleteAllRecipients() {
         SQLiteDatabase db =  this.getWritableDatabase();
         int result = db.delete(
-                DBHelper.DBEntry.TABLE_NAME,
+                DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 "1",
                 new String[] {}
         );
@@ -192,14 +206,103 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private ContentValues provideValueObject(final String alias, final String name, final String phoneNo, final String message, final String distance, final String latitude, final String longitude) {
         ContentValues values = new ContentValues();
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_ALIAS, alias);
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_NAME, name);
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_MESSAGE, message);
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_DISTANCE, distance);
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LATITUDE, latitude);
-        values.put(DBHelper.DBEntry.COLUMN_NAME_RECPIPENT_LONGITUDE, longitude);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_ALIAS, alias);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_NAME, name);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_PHONE, phoneNo);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_MESSAGE, message);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_DISTANCE, distance);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LATITUDE, latitude);
+        values.put(DBHelper.DBEntry.RECIPIENT_COLUMN_NAME_RECPIPENT_LONGITUDE, longitude);
         return values;
     }
 
+    public boolean getServiceSettings() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = {
+                DBHelper.DBEntry._ID,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_ACCURACY,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN
+        };
+
+        Cursor cursor = db.query(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                columns,
+                "1",
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if(cursor.moveToNext()) {
+            AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(cursor.getString(1));
+            AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = cursor.getString(2);
+            AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = Boolean.parseBoolean(cursor.getString(3));
+            cursor.close();
+            db.close();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public long addServiceSettings(final Long interval, final String accuracy, final Boolean isManuallyStopped) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL, interval);
+        values.put(DBEntry.SERVICE_COLUMN_NAME_ACCURACY, accuracy);
+        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped.toString());
+        long result = db.insert(
+                DBEntry.SERVICE_TABLE_NAME,
+                null,
+                values
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateServiceIntervalSettings(final Long interval) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL, interval);
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(1)}
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateServiceAccuracySettings(final String accuracy) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_ACCURACY, accuracy);
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(1)}
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateServiceIsManuallyStoppedSettings(final Boolean isManuallyStopped) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped.toString());
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(1)}
+        );
+        db.close();
+        return result;
+    }
 }
