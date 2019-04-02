@@ -51,7 +51,7 @@ public class AppResources {
     public static class serviceSettings {
         public static long WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = 10 * 60 * 1000;
         public static String WEASLEY_SERVICE_LOCATION_ACCURACY = "HIGH";
-        public static Boolean WEALEY_SERVICE_IF_MANUALLY_STOPPED;
+        public static Boolean WEASLEY_SERVICE_IF_MANUALLY_STOPPED = false;
     }
 
     public static Boolean isLocationServiceRunning;

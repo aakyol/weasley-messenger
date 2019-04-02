@@ -14,7 +14,7 @@ public class SnackbarHelper {
     public static void printShortSnackbarMessage(final View activityViewObject, final String message) {
         Snackbar.make(activityViewObject,
                 message,
-                Snackbar.LENGTH_LONG).setAction("Location: ", null).show();
+                Snackbar.LENGTH_SHORT).setAction("Location: ", null).show();
     }
 
     /**

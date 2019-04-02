@@ -239,7 +239,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if(cursor.moveToNext()) {
             AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(cursor.getString(1));
             AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = cursor.getString(2);
-            AppResources.serviceSettings.WEALEY_SERVICE_IF_MANUALLY_STOPPED = Boolean.parseBoolean(cursor.getString(3));
+            AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = Boolean.parseBoolean(cursor.getString(3));
             cursor.close();
             db.close();
             return true;
@@ -254,7 +254,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL, interval);
         values.put(DBEntry.SERVICE_COLUMN_NAME_ACCURACY, accuracy);
-        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped);
+        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped.toString());
         long result = db.insert(
                 DBEntry.SERVICE_TABLE_NAME,
                 null,
@@ -272,7 +272,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelper.DBEntry.SERVICE_TABLE_NAME,
                 values,
                 DBHelper.DBEntry._ID + " = ?",
-                new String[]{String.valueOf(0)}
+                new String[]{String.valueOf(1)}
         );
         db.close();
         return result;
@@ -286,7 +286,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelper.DBEntry.SERVICE_TABLE_NAME,
                 values,
                 DBHelper.DBEntry._ID + " = ?",
-                new String[]{String.valueOf(0)}
+                new String[]{String.valueOf(1)}
         );
         db.close();
         return result;
@@ -295,12 +295,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public long updateServiceIsManuallyStoppedSettings(final Boolean isManuallyStopped) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped);
+        values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped.toString());
         int result = db.update(
                 DBHelper.DBEntry.SERVICE_TABLE_NAME,
                 values,
                 DBHelper.DBEntry._ID + " = ?",
-                new String[]{String.valueOf(0)}
+                new String[]{String.valueOf(1)}
         );
         db.close();
         return result;
