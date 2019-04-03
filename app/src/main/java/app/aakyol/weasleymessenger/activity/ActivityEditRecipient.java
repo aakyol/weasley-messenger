@@ -168,7 +168,9 @@ public class ActivityEditRecipient extends AppCompatActivity {
                                 LoadingSpinnerHelper.setSpinnerVisible();
                                 dbHelper.deleteRecipient(recipientDBRowId);
                                 LoadingSpinnerHelper.setSpinnerGone();
-                                AppResources.enabledRecipientList.remove(recipientAlias);
+                                if(Objects.nonNull(AppResources.enabledRecipientList)) {
+                                    AppResources.enabledRecipientList.remove(recipientAlias);
+                                }
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                                         "Recipient \"" + recipientAlias + "\" is deleted.");
                                 finish();
