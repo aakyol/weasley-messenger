@@ -146,11 +146,12 @@ public class ActivityListRecipients extends AppCompatActivity {
                         public void onClick(View view) {
                             final String enabledRecipientAlias = dbHelper
                                     .getAllRecipientsById(((RecipientModel) listView.getAdapter().getItem(index)).getDbID()).getAlias();
-                            if(((Switch) view).isChecked()){
-                                AppResources.enabledRecipientList.add(enabledRecipientAlias);
-                            }
-                            else {
-                                AppResources.enabledRecipientList.remove(enabledRecipientAlias);
+                            if(Objects.nonNull(AppResources.enabledRecipientList)) {
+                                if (((Switch) view).isChecked()) {
+                                    AppResources.enabledRecipientList.add(enabledRecipientAlias);
+                                } else {
+                                    AppResources.enabledRecipientList.remove(enabledRecipientAlias);
+                                }
                             }
                         }
                     });
@@ -171,7 +172,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         SnackbarHelper.printLongSnackbarMessage(getView(),
-                                "Permission checks failed. The application will no longer" +
+                                "Permission checks failed. The application will no longer " +
                                         "behave as expected. Please restart the application.");
                 }
             }

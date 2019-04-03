@@ -53,7 +53,10 @@ public class ActivityNewRecipient extends AppCompatActivity {
         recipientValidator = appComponent.getRecipientValidator();
 
         final TextView locationText = findViewById(R.id.location_current);
-        locationText.setText("");
+        locationText.setText("Please fetch a location for your message:");
+
+        final TextView phoneNumberText = findViewById(R.id.phone_number_current);
+        phoneNumberText.setText("Select a contact as a recipient:");
 
         final Button selectContactButton = findViewById(R.id.phone_number_button);
         selectContactButton.setOnClickListener(new View.OnClickListener() {
