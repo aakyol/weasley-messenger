@@ -145,7 +145,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
                         longitude =  Double.toString(locationForRecipientMessage.getLastLocation().getLongitude());
                     }
                     LoadingSpinnerHelper.setSpinnerVisible();
-                    dbHelper.updateRecipient(recipientDBRowId, alias, name, phoneNo, message, distance, latitude, longitude);
+                    dbHelper.updateRecipient(recipientDBRowId, alias, name, recipient.isEnabled(), phoneNo, message, distance, latitude, longitude);
                     LoadingSpinnerHelper.setSpinnerGone();
                     SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                             "Recipient \"" + ((EditText) findViewById(R.id.edit_recipient_alias_input)).getText().toString() + "\" is saved.");

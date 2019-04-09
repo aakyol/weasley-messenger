@@ -142,7 +142,7 @@ public class LocationService extends Service {
                                         Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"File writer failed to write.");
                                     }
                                     MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
-                                    NotificationHelper.sendNotificationToDevice("The message with alias " + recipient.getAlias() + " is sent.", locationServiceContext, pendingIntent);
+                                    NotificationHelper.sendNotificationToDevice("The message for alias " + recipient.getAlias() + " is sent.", locationServiceContext, pendingIntent);
                                     AppResources.enabledRecipientList.remove(recipient.getAlias());
                                 } else if (distance[0] >= recipient.getDistance() && !AppResources.enabledRecipientList.contains(recipient.getAlias())) {
                                     AppResources.enabledRecipientList.add(recipient.getAlias());

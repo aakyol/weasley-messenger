@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -48,6 +50,8 @@ public class ActivityListRecipients extends AppCompatActivity {
 
     private AppComponent appComponent;
     private DBHelper dbHelper;
+
+    private List<RecipientModel> recipients;
 
     public static Context getContext() {
         return listRecipientActivityContext;
@@ -127,7 +131,7 @@ public class ActivityListRecipients extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        List<RecipientModel> recipients = dbHelper.getAllRecipients();
+        recipients = dbHelper.getAllRecipients();
         AppResources.currentRecipients.currentRecipientList = recipients;
         ArrayAdapter adapter = new ArrayAdapter<>(this,
                 R.layout.activity_list_recipient_layout,
@@ -135,6 +139,18 @@ public class ActivityListRecipients extends AppCompatActivity {
                 recipients);
 
         listView.setAdapter(adapter);
+
+        final View rootView = getWindow().getDecorView().getRootView();
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(
+            new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    for(int i = 0; i < listView.getChildCount(); i++) {
+                        ((Switch) listView.getChildAt(i).findViewById(R.id.listview_switch)).setChecked(recipients.get(i).isEnabled());
+                    }
+                }
+            }
+        );
 
         listView.post(new Runnable() {
             @Override
@@ -144,15 +160,39 @@ public class ActivityListRecipients extends AppCompatActivity {
                     ((Switch) listView.getChildAt(index).findViewById(R.id.listview_switch)).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            final RecipientModel recipient = recipients.get(index);
                             final String enabledRecipientAlias = dbHelper
                                     .getAllRecipientsById(((RecipientModel) listView.getAdapter().getItem(index)).getDbID()).getAlias();
                             if(Objects.nonNull(AppResources.enabledRecipientList)) {
                                 if (((Switch) view).isChecked()) {
+                                    dbHelper.updateRecipient(
+                                            recipient.getDbID(),
+                                            recipient.getAlias(),
+                                            recipient.getName(),
+                                            true,
+                                            recipient.getPhoneNumber(),
+                                            recipient.getMessageToBeSent(),
+                                            recipient.getDistance().toString(),
+                                            String.valueOf(recipient.getLatitude()),
+                                            String.valueOf(recipient.getLongitude())
+                                    );
                                     AppResources.enabledRecipientList.add(enabledRecipientAlias);
                                 } else {
+                                    dbHelper.updateRecipient(
+                                            recipient.getDbID(),
+                                            recipient.getAlias(),
+                                            recipient.getName(),
+                                            false,
+                                            recipient.getPhoneNumber(),
+                                            recipient.getMessageToBeSent(),
+                                            recipient.getDistance().toString(),
+                                            String.valueOf(recipient.getLatitude()),
+                                            String.valueOf(recipient.getLongitude())
+                                    );
                                     AppResources.enabledRecipientList.remove(enabledRecipientAlias);
                                 }
                             }
+                            //recipients = dbHelper.getAllRecipients();
                         }
                     });
                 }
@@ -161,6 +201,8 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         dbHelper.getServiceSettings();
     }
+
+
 
     private void checkIfPermissionsGranted() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
