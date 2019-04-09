@@ -15,6 +15,7 @@ public class NotificationHelper {
 
     /**
      * Creates the notification channel to put message sent notifications through
+     *
      * @param context
      */
     public static void createNotificationChannel(final Context context) {
@@ -39,6 +40,7 @@ public class NotificationHelper {
 
     /**
      * Notification sender
+     *
      * @param notificationText
      * @param context
      * @param pendingIntent

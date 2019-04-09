@@ -1,7 +1,6 @@
 <resources>
     <!-- the theme applied to the application or activity -->
-    <style name="CustomActionBarTheme"
-        parent="@style/Theme.AppCompat.Light">
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
         <item name="android:actionMenuTextColor">@color/colorText</item>
@@ -9,20 +8,17 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyActionBar"
-        parent="@style/Widget.AppCompat.ActionBar">
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
         <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
     </style>
 
     <!-- ActionBar title text -->
-    <style name="MyActionBarTitleText"
-        parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="MyActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/colorText</item>
     </style>
 
     <!-- ActionBar tabs text styles -->
-    <style name="MyActionBarTabText"
-        parent="@style/Widget.AppCompat.ActionBar.TabText">
+    <style name="MyActionBarTabText" parent="@style/Widget.AppCompat.ActionBar.TabText">
         <item name="android:textColor">@color/colorText</item>
     </style>
 </resources>

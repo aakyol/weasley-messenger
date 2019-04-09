@@ -53,26 +53,24 @@ public class ActivitySettings extends AppCompatActivity {
         intervalText.setText(String.valueOf(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL / (60 * 1000)));
 
         final Button serviceButon = (Button) findViewById(R.id.service_button);
-        if(Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
+        if (Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
             serviceButon.setText(R.string.stop_location_service);
-        }
-        else {
+        } else {
             serviceButon.setText(R.string.start_location_service);
         }
         serviceButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
+                if (!AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
                     AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = true;
                     dbHelper.updateServiceIsManuallyStoppedSettings(true);
 
                 }
-                if(Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
+                if (Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
                     stopService(AppResources.WEASLEY_SERVICE_INTENT);
                     serviceButon.setText(R.string.start_location_service);
-                }
-                else {
-                    if(Objects.isNull(AppResources.WEASLEY_SERVICE_INTENT)) {
+                } else {
+                    if (Objects.isNull(AppResources.WEASLEY_SERVICE_INTENT)) {
                         AppResources.WEASLEY_SERVICE_INTENT = new Intent(ActivityListRecipients.getContext(), LocationService.class);
                     }
                     startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
@@ -88,26 +86,25 @@ public class ActivitySettings extends AppCompatActivity {
                 final String inputInterval = intervalText.getText().toString();
                 final String inputAccuracy = accuracySpinner.getSelectedItem().toString();
                 boolean settingsChanged = false;
-                if(!settingsValidator.ifAllFieldsAreEmpty(inputInterval, inputAccuracy)) {
-                    if(!settingsValidator.ifIntervalIsSame(inputInterval)) {
+                if (!settingsValidator.ifAllFieldsAreEmpty(inputInterval, inputAccuracy)) {
+                    if (!settingsValidator.ifIntervalIsSame(inputInterval)) {
                         long newInterval = Long.valueOf(inputInterval) * 60 * 1000;
                         AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = newInterval;
                         dbHelper.updateServiceIntervalSettings(newInterval);
                         settingsChanged = true;
                     }
-                    if(!settingsValidator.ifAccuracyIsSame(inputAccuracy)) {
+                    if (!settingsValidator.ifAccuracyIsSame(inputAccuracy)) {
                         AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
                         dbHelper.updateServiceAccuracySettings(inputAccuracy);
                         settingsChanged = true;
                     }
-                    if(settingsChanged) {
+                    if (settingsChanged) {
                         stopService(AppResources.WEASLEY_SERVICE_INTENT);
                         startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
                         SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.getView(), "Weasley Helper has been restarted to have the changes in effect.");
                     }
                     finish();
-                }
-                else {
+                } else {
                     SnackbarHelper.printLongSnackbarMessage(view, "No setting is changed. You can leave the settings page via the back button.");
                 }
             }

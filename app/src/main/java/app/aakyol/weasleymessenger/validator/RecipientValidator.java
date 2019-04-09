@@ -7,7 +7,8 @@ import javax.inject.Singleton;
 public class RecipientValidator {
 
     @Inject
-    public RecipientValidator() {}
+    public RecipientValidator() {
+    }
 
     public Boolean ifAnyFieldIsEmpty(final String alias, final String phoneNo, final String message, final String distance) {
         return (alias.isEmpty() || phoneNo.isEmpty() || message.isEmpty() || distance.isEmpty());

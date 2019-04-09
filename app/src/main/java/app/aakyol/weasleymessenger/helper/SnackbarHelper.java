@@ -8,6 +8,7 @@ public class SnackbarHelper {
 
     /**
      * Prints a snackbar message with a short duration
+     *
      * @param activityViewObject
      * @param message
      */
@@ -19,6 +20,7 @@ public class SnackbarHelper {
 
     /**
      * Prints a snackbar message with a long duration
+     *
      * @param activityViewObject
      * @param message
      */

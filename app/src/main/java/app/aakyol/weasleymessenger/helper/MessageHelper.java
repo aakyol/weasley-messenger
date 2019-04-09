@@ -1,6 +1,5 @@
 package app.aakyol.weasleymessenger.helper;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,6 +13,7 @@ public class MessageHelper {
 
     /**
      * SMS Message sender
+     *
      * @param phoneNo
      * @param message
      */
@@ -24,6 +24,7 @@ public class MessageHelper {
 
     /**
      * WhatsApp message sender - Deprecated since it launches an activity
+     *
      * @param context
      */
     @Deprecated
@@ -42,7 +43,7 @@ public class MessageHelper {
             context.startActivity(Intent.createChooser(waIntent, "Share with"));
 
         } catch (PackageManager.NameNotFoundException e) {
-            Log.d( LOG_TAG_LOCATIONSERVICE,"WhatsApp not Installed");
+            Log.d(LOG_TAG_LOCATIONSERVICE, "WhatsApp not Installed");
         }
 
     }

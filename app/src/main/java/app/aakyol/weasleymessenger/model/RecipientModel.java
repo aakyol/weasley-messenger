@@ -9,6 +9,7 @@ public class RecipientModel {
     private int dbID;
     private String alias;
     private String name;
+    private boolean enabled;
     private String phoneNumber;
     private String messageToBeSent;
     private Double distance;
@@ -37,6 +38,14 @@ public class RecipientModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getPhoneNumber() {

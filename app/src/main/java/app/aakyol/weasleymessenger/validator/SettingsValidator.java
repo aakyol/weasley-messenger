@@ -9,7 +9,8 @@ import app.aakyol.weasleymessenger.resource.AppResources;
 public class SettingsValidator {
 
     @Inject
-    public SettingsValidator() {}
+    public SettingsValidator() {
+    }
 
     public Boolean ifAllFieldsAreEmpty(final String interval, final String accuracy) {
         return (interval.isEmpty() && accuracy.isEmpty());

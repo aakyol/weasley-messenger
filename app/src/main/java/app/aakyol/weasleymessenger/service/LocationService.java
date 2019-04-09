@@ -21,7 +21,6 @@ import com.google.android.gms.location.SettingsClient;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -72,11 +71,11 @@ public class LocationService extends Service {
         startForeground(
                 101,
                 NotificationHelper.buildNotification("Weasley Helper is working, busy as a lacewing fly.",
-                                                      locationServiceContext,pendingIntent
+                        locationServiceContext, pendingIntent
                 ).build()
         );
 
-        if(Objects.isNull(AppResources.enabledRecipientList)) {
+        if (Objects.isNull(AppResources.enabledRecipientList)) {
             AppResources.enabledRecipientList = new HashSet<>();
         }
 
@@ -93,13 +92,11 @@ public class LocationService extends Service {
             public void run() {
                 // Create the location request to start receiving updates
                 locationRequest = new LocationRequest();
-                if(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY.equals("HIGH")) {
+                if (AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY.equals("HIGH")) {
                     locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                }
-                else if(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY.equals("MEDIUM")) {
+                } else if (AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY.equals("MEDIUM")) {
                     locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                }
-                else {
+                } else {
                     locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
                 }
                 locationRequest.setInterval(UPDATE_INTERVAL);
@@ -118,39 +115,39 @@ public class LocationService extends Service {
                 if (ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(locationServiceContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     getFusedLocationProviderClient(locationServiceContext).requestLocationUpdates(locationRequest, new LocationCallback() {
-                        @Override
-                        public void onLocationResult(LocationResult locationResult) {
-                            Log.d(LOG_TAG_LOCATIONSERVICE, "Location fetched: " + locationResult.getLastLocation());
-                            AppResources.currentLocation = locationResult;
-                            final List<RecipientModel> recipients = AppResources.currentRecipients.currentRecipientList;
-                            final double currentLatitude = locationResult.getLastLocation().getLatitude();
-                            final double currentLongitude = locationResult.getLastLocation().getLongitude();
-                            for (RecipientModel recipient : recipients) {
-                                final double recipientLatitude = recipient.getLatitude();
-                                final double recipientLongitude = recipient.getLongitude();
-                                float[] distance = new float[1];
-                                Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
-                                if (AppResources.enabledRecipientList.contains(recipient.getAlias()) && distance[0] < recipient.getDistance()) {
-                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getName() + "\". " +
-                                            "Distance to location for accuracy: " + distance[0]);
-                                    try {
-                                        outputStreamWriter = new OutputStreamWriter(locationServiceContext.openFileOutput("weasley_service_logs.txt", Context.MODE_APPEND));
-                                        outputStreamWriter.write("Matched location. Sending the message to recipient \"" + recipient.getAlias() + "\". " +
-                                                "Distance to location for accuracy: " + distance[0] + "m. \n");
-                                        outputStreamWriter.close();
-                                    } catch (IOException e) {
-                                        Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE,"File writer failed to write.");
+                                @Override
+                                public void onLocationResult(LocationResult locationResult) {
+                                    Log.d(LOG_TAG_LOCATIONSERVICE, "Location fetched: " + locationResult.getLastLocation());
+                                    AppResources.currentLocation = locationResult;
+                                    final List<RecipientModel> recipients = AppResources.currentRecipients.currentRecipientList;
+                                    final double currentLatitude = locationResult.getLastLocation().getLatitude();
+                                    final double currentLongitude = locationResult.getLastLocation().getLongitude();
+                                    for (RecipientModel recipient : recipients) {
+                                        final double recipientLatitude = recipient.getLatitude();
+                                        final double recipientLongitude = recipient.getLongitude();
+                                        float[] distance = new float[1];
+                                        Location.distanceBetween(recipientLatitude, recipientLongitude, currentLatitude, currentLongitude, distance);
+                                        if (AppResources.enabledRecipientList.contains(recipient.getAlias()) && distance[0] < recipient.getDistance()) {
+                                            Log.d(LOG_TAG_LOCATIONSERVICE, "Matched location. Sending the message to recipient \"" + recipient.getName() + "\". " +
+                                                    "Distance to location for accuracy: " + distance[0]);
+                                            try {
+                                                outputStreamWriter = new OutputStreamWriter(locationServiceContext.openFileOutput("weasley_service_logs.txt", Context.MODE_APPEND));
+                                                outputStreamWriter.write("Matched location. Sending the message to recipient \"" + recipient.getAlias() + "\". " +
+                                                        "Distance to location for accuracy: " + distance[0] + "m. \n");
+                                                outputStreamWriter.close();
+                                            } catch (IOException e) {
+                                                Log.d(AppResources.LogConstans.ServiceLogConstans.LOG_TAG_LOCATIONSERVICE, "File writer failed to write.");
+                                            }
+                                            MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
+                                            NotificationHelper.sendNotificationToDevice("The message for alias " + recipient.getAlias() + " is sent.", locationServiceContext, pendingIntent);
+                                            AppResources.enabledRecipientList.remove(recipient.getAlias());
+                                        } else if (distance[0] >= recipient.getDistance() && !AppResources.enabledRecipientList.contains(recipient.getAlias())) {
+                                            AppResources.enabledRecipientList.add(recipient.getAlias());
+                                        }
                                     }
-                                    MessageHelper.sendSMSMessage(recipient.getPhoneNumber(), recipient.getMessageToBeSent());
-                                    NotificationHelper.sendNotificationToDevice("The message with alias " + recipient.getAlias() + " is sent.", locationServiceContext, pendingIntent);
-                                    AppResources.enabledRecipientList.remove(recipient.getAlias());
-                                } else if (distance[0] >= recipient.getDistance() && !AppResources.enabledRecipientList.contains(recipient.getAlias())) {
-                                    AppResources.enabledRecipientList.add(recipient.getAlias());
                                 }
-                            }
-                        }
-                    },
-                    Looper.myLooper());
+                            },
+                            Looper.myLooper());
                 }
             }
         };
