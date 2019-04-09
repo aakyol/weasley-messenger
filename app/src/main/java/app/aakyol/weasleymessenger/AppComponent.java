@@ -12,6 +12,8 @@ import dagger.Component;
 public interface AppComponent {
 
     DBHelper getDBHelper();
+
     RecipientValidator getRecipientValidator();
+
     SettingsValidator getSettingsValidator();
 }

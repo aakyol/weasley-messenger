@@ -1,14 +1,12 @@
 package app.aakyol.weasleymessenger.activity;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Objects;
@@ -81,7 +78,7 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         LoadingSpinnerHelper.setLoadingSpinner(this);
         LoadingSpinnerHelper.setSpinnerVisible();
-        if(!dbHelper.getServiceSettings()) {
+        if (!dbHelper.getServiceSettings()) {
             dbHelper.addServiceSettings(
                     AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL,
                     AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY,
@@ -142,20 +139,20 @@ public class ActivityListRecipients extends AppCompatActivity {
 
         final View rootView = getWindow().getDecorView().getRootView();
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(
-            new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    for(int i = 0; i < listView.getChildCount(); i++) {
-                        ((Switch) listView.getChildAt(i).findViewById(R.id.listview_switch)).setChecked(recipients.get(i).isEnabled());
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        for (int i = 0; i < listView.getChildCount(); i++) {
+                            ((Switch) listView.getChildAt(i).findViewById(R.id.listview_switch)).setChecked(recipients.get(i).isEnabled());
+                        }
                     }
                 }
-            }
         );
 
         listView.post(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < listView.getChildCount(); i++) {
+                for (int i = 0; i < listView.getChildCount(); i++) {
                     final int index = i;
                     ((Switch) listView.getChildAt(index).findViewById(R.id.listview_switch)).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -163,7 +160,7 @@ public class ActivityListRecipients extends AppCompatActivity {
                             final RecipientModel recipient = recipients.get(index);
                             final String enabledRecipientAlias = dbHelper
                                     .getAllRecipientsById(((RecipientModel) listView.getAdapter().getItem(index)).getDbID()).getAlias();
-                            if(Objects.nonNull(AppResources.enabledRecipientList)) {
+                            if (Objects.nonNull(AppResources.enabledRecipientList)) {
                                 if (((Switch) view).isChecked()) {
                                     dbHelper.updateRecipient(
                                             recipient.getDbID(),
@@ -203,12 +200,11 @@ public class ActivityListRecipients extends AppCompatActivity {
     }
 
 
-
     private void checkIfPermissionsGranted() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         requestPermissions();
                         break;
@@ -220,20 +216,19 @@ public class ActivityListRecipients extends AppCompatActivity {
             }
         };
 
-        if(!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContext)) {
+        if (!PermissionHelper.checkPermissions(listRecipientActivity, listRecipientActivityContext)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Permissions are revoked. The application needs these permissions to" +
                     "work properly. Would you like to allow the permissions?")
                     .setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();
-        }
-        else if (Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
+        } else if (Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
             Log.d(LOG_TAG_ACTIVITYLISTRECIPIENTS, "Location service is already running.");
 
-        } else if(AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
-            SnackbarHelper.printLongSnackbarMessage(getView(),"Weasley Helper was manually stopped. To run it again, please go to the Settings and start the service manually.");
+        } else if (AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
+            SnackbarHelper.printLongSnackbarMessage(getView(), "Weasley Helper was manually stopped. To run it again, please go to the Settings and start the service manually.");
         } else {
-            if(Objects.isNull(AppResources.WEASLEY_SERVICE_INTENT)) {
+            if (Objects.isNull(AppResources.WEASLEY_SERVICE_INTENT)) {
                 AppResources.WEASLEY_SERVICE_INTENT = new Intent(this, LocationService.class);
             }
             startForegroundService(AppResources.WEASLEY_SERVICE_INTENT);
@@ -261,6 +256,7 @@ public class ActivityListRecipients extends AppCompatActivity {
             listRecipientActivity.startActivity(newSettingsIntent);
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

@@ -101,7 +101,7 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         List<RecipientModel> recipients = new ArrayList<>();
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             RecipientModel recipient = new RecipientModel();
             recipient.setDbID(cursor.getInt(0));
             recipient.setAlias(cursor.getString(1));
@@ -135,7 +135,7 @@ public class DBHelper extends SQLiteOpenHelper {
         };
 
         String selection = DBHelper.DBEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(rowId) };
+        String[] selectionArgs = {String.valueOf(rowId)};
 
         Cursor cursor = db.query(
                 DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
@@ -148,7 +148,7 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         RecipientModel recipient = new RecipientModel();
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             recipient.setAlias(cursor.getString(0));
             recipient.setName(cursor.getString(1));
             recipient.setEnabled(Boolean.parseBoolean(cursor.getString(2)));
@@ -189,22 +189,22 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public int deleteRecipient(final int rowId) {
-        SQLiteDatabase db =  this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(
                 DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 DBHelper.DBEntry._ID + " = ?",
-                new String[] {String.valueOf(rowId)}
+                new String[]{String.valueOf(rowId)}
         );
         db.close();
         return result;
     }
 
     public int deleteAllRecipients() {
-        SQLiteDatabase db =  this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(
                 DBHelper.DBEntry.RECIPIENT_TABLE_NAME,
                 "1",
-                new String[] {}
+                new String[]{}
         );
         db.close();
         return result;
@@ -257,15 +257,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 null
         );
 
-        if(cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(cursor.getString(1));
             AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = cursor.getString(2);
             AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = Boolean.parseBoolean(cursor.getString(3));
             cursor.close();
             db.close();
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

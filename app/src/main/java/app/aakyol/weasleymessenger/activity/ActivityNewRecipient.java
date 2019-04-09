@@ -64,8 +64,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     getContactList(v);
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -76,15 +75,14 @@ public class ActivityNewRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LocationResult location = AppResources.currentLocation;
-                if(Objects.nonNull(location)) {
+                if (Objects.nonNull(location)) {
                     locationForRecipientMessage = location;
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "Fetched latitude and longitude: " +
                                     location.getLastLocation().getLatitude()
                                     + ", " + location.getLastLocation().getLongitude());
                     locationText.setText("Current location on recipient: " + locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
-                }
-                else {
+                } else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "Location is not available at this time.");
                 }
@@ -100,15 +98,13 @@ public class ActivityNewRecipient extends AppCompatActivity {
                 final String phoneNo = Objects.nonNull(selectedContact) ? selectedContact.getPhoneNo() : "";
                 final String message = ((EditText) findViewById(R.id.message_to_be_sent_input)).getText().toString();
                 final String distance = ((EditText) findViewById(R.id.location_distance_input)).getText().toString();
-                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
+                if (recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
-                }
-                else if(AppResources.currentRecipients.isRecipientWithAliasExists(alias)) {
+                } else if (AppResources.currentRecipients.isRecipientWithAliasExists(alias)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "This alias exists. Alias must be unique.");
-                }
-                else if(Objects.nonNull(locationForRecipientMessage)) {
+                } else if (Objects.nonNull(locationForRecipientMessage)) {
                     Location lastLocation = locationForRecipientMessage.getLastLocation();
                     LoadingSpinnerHelper.setSpinnerVisible();
                     dbHelper.addRecipient(alias, name, false, phoneNo, message, distance, Double.toString(lastLocation.getLatitude()), Double.toString(lastLocation.getLongitude()));
@@ -116,8 +112,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
                             "Recipient \"" + ((EditText) findViewById(R.id.recipient_alias_input)).getText().toString() + "\" is  saved.");
                     LoadingSpinnerHelper.setSpinnerGone();
                     finish();
-                }
-                else {
+                } else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "Location is not saved. Please try again to fetch your current location.");
                 }
@@ -143,8 +138,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getContactList(View v)
-    {
+    public void getContactList(View v) {
         Intent contactsIntent = new Intent(Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
         startActivityForResult(contactsIntent, AppResources.RESULT_PICK_CONTACT);
@@ -156,7 +150,7 @@ public class ActivityNewRecipient extends AppCompatActivity {
     }
 
     private void getSelectedContact(final Intent data) {
-        if(Objects.nonNull(data)) {
+        if (Objects.nonNull(data)) {
             Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
             cursor.moveToFirst();
             int phoneNoIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);

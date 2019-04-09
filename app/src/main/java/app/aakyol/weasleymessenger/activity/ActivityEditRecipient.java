@@ -63,10 +63,9 @@ public class ActivityEditRecipient extends AppCompatActivity {
         recipientValidator = appComponent.getRecipientValidator();
 
         recipientDBRowId = (int) getIntent().getExtras().get(RECIPIENT_ID);
-        if(recipientDBRowId != -1) {
+        if (recipientDBRowId != -1) {
             recipient = dbHelper.getAllRecipientsById(recipientDBRowId);
-        }
-        else {
+        } else {
             SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
                     "An error occured. Please contact the application's author with this error code: E-DB01");
             finish();
@@ -102,15 +101,14 @@ public class ActivityEditRecipient extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LocationResult location = app.aakyol.weasleymessenger.resource.AppResources.currentLocation;
-                if(Objects.nonNull(location)) {
+                if (Objects.nonNull(location)) {
                     locationForRecipientMessage = location;
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "Fetched latitude and longitude: " +
                                     location.getLastLocation().getLatitude()
                                     + ", " + location.getLastLocation().getLongitude());
                     locationText.setText("Current location on recipient: " + locationForRecipientMessage.getLastLocation().getLatitude() + ", " + locationForRecipientMessage.getLastLocation().getLongitude());
-                }
-                else {
+                } else {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "Location is not available at this time.");
                 }
@@ -128,21 +126,19 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 final String distance = ((EditText) findViewById(R.id.edit_location_distance_input)).getText().toString();
                 String latitude;
                 String longitude;
-                if(recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
+                if (recipientValidator.ifAnyFieldIsEmpty(alias, phoneNo, message, distance)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "One of the fields is empty, which is not allowed.");
-                }
-                else if(AppResources.currentRecipients.isRecipientWithAliasExists(alias)) {
+                } else if (AppResources.currentRecipients.isRecipientWithAliasExists(alias)) {
                     SnackbarHelper.printLongSnackbarMessage(findViewById(android.R.id.content),
                             "This alias exists. Alias must be unique.");
-                }
-                else {
+                } else {
                     if (Objects.isNull(locationForRecipientMessage)) {
                         latitude = Double.toString(recipient.getLatitude());
                         longitude = Double.toString(recipient.getLongitude());
                     } else {
                         latitude = Double.toString(locationForRecipientMessage.getLastLocation().getLatitude());
-                        longitude =  Double.toString(locationForRecipientMessage.getLastLocation().getLongitude());
+                        longitude = Double.toString(locationForRecipientMessage.getLastLocation().getLongitude());
                     }
                     LoadingSpinnerHelper.setSpinnerVisible();
                     dbHelper.updateRecipient(recipientDBRowId, alias, name, recipient.isEnabled(), phoneNo, message, distance, latitude, longitude);
@@ -162,13 +158,13 @@ public class ActivityEditRecipient extends AppCompatActivity {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 dialog.dismiss();
                                 LoadingSpinnerHelper.setSpinnerVisible();
                                 dbHelper.deleteRecipient(recipientDBRowId);
                                 LoadingSpinnerHelper.setSpinnerGone();
-                                if(Objects.nonNull(AppResources.enabledRecipientList)) {
+                                if (Objects.nonNull(AppResources.enabledRecipientList)) {
                                     AppResources.enabledRecipientList.remove(recipientAlias);
                                 }
                                 SnackbarHelper.printLongSnackbarMessage(ActivityListRecipients.listRecipientActivityViewObject,
@@ -207,8 +203,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getContactList(View v)
-    {
+    public void getContactList(View v) {
         Intent contactsIntent = new Intent(Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
         startActivityForResult(contactsIntent, AppResources.RESULT_PICK_CONTACT);
@@ -220,7 +215,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
     }
 
     private void getSelectedContact(final Intent data) {
-        if(Objects.nonNull(data)) {
+        if (Objects.nonNull(data)) {
             Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
             cursor.moveToFirst();
             int phoneNoIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);

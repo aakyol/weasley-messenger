@@ -64,8 +64,8 @@ public class AppResources {
         public static List<RecipientModel> currentRecipientList;
 
         public static boolean isRecipientWithAliasExists(final String alias) {
-            for(RecipientModel recipient : currentRecipientList) {
-                if(recipient.getAlias().equals(alias)) {
+            for (RecipientModel recipient : currentRecipientList) {
+                if (recipient.getAlias().equals(alias)) {
                     return true;
                 }
             }
