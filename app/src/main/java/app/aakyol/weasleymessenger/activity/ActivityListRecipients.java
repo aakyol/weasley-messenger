@@ -72,7 +72,7 @@ public class ActivityListRecipients extends AppCompatActivity {
         listRecipientActivityViewObject = findViewById(android.R.id.content);
 
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule())
+                .appModule(new AppModule(this))
                 .build();
         dbHelper = appComponent.getDBHelper();
 
@@ -82,7 +82,8 @@ public class ActivityListRecipients extends AppCompatActivity {
             dbHelper.addServiceSettings(
                     AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL,
                     AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY,
-                    AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED
+                    AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED,
+                    AppResources.serviceSettings.WEASLEY_SERVICE_ON_BOOT_STARTUP
             );
         }
         LoadingSpinnerHelper.setSpinnerGone();
