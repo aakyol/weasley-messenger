@@ -52,6 +52,7 @@ public class AppResources {
         public static long WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = 10 * 60 * 1000;
         public static String WEASLEY_SERVICE_LOCATION_ACCURACY = "HIGH";
         public static Boolean WEASLEY_SERVICE_IF_MANUALLY_STOPPED = false;
+        public static Boolean WEASLEY_SERVICE_ON_BOOT_STARTUP = true;
     }
 
     public static Boolean isLocationServiceRunning;

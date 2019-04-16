@@ -24,4 +24,16 @@ public class SettingsValidator {
         return accuracy.equals(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY);
     }
 
+    public Boolean ifOnBootStartupIsSame(final String onBootStartup) {
+        if(AppResources.serviceSettings.WEASLEY_SERVICE_ON_BOOT_STARTUP && onBootStartup.equals("YES")) {
+            return true;
+        }
+        else if(!AppResources.serviceSettings.WEASLEY_SERVICE_ON_BOOT_STARTUP && onBootStartup.equals("NO")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import androidx.appcompat.app.AppCompatActivity;
 import app.aakyol.weasleymessenger.model.RecipientModel;
 import app.aakyol.weasleymessenger.resource.AppResources;
 
@@ -43,6 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String SERVICE_COLUMN_NAME_FASTEST_INTERVAL = "fastest_interval";
         public static final String SERVICE_COLUMN_NAME_ACCURACY = "accuracy";
         public static final String SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN = "manual_shutdown";
+        public static final String SERVICE_COLUMN_NAME_BOOT_STARTUP = "boot_startup";
     }
 
     private static final String SQL_CREATE_RECIPIENT_ENTRIES =
@@ -62,7 +64,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBEntry._ID + " INTEGER PRIMARY KEY," +
                     DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL + " TEXT UNIQUE," +
                     DBEntry.SERVICE_COLUMN_NAME_ACCURACY + " TEXT," +
-                    DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN + " TEXT)";
+                    DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN + " TEXT," +
+                    DBEntry.SERVICE_COLUMN_NAME_BOOT_STARTUP + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -243,7 +246,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBHelper.DBEntry._ID,
                 DBHelper.DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL,
                 DBHelper.DBEntry.SERVICE_COLUMN_NAME_ACCURACY,
-                DBHelper.DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN,
+                DBHelper.DBEntry.SERVICE_COLUMN_NAME_BOOT_STARTUP
         };
 
         Cursor cursor = db.query(
@@ -261,6 +265,7 @@ public class DBHelper extends SQLiteOpenHelper {
             AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL = Long.valueOf(cursor.getString(1));
             AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = cursor.getString(2);
             AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = Boolean.parseBoolean(cursor.getString(3));
+            AppResources.serviceSettings.WEASLEY_SERVICE_ON_BOOT_STARTUP = Boolean.parseBoolean(cursor.getString(4));
             cursor.close();
             db.close();
             return true;
@@ -269,12 +274,13 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long addServiceSettings(final Long interval, final String accuracy, final Boolean isManuallyStopped) {
+    public long addServiceSettings(final Long interval, final String accuracy, final Boolean isManuallyStopped, final Boolean onBootStartup) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBEntry.SERVICE_COLUMN_NAME_FASTEST_INTERVAL, interval);
         values.put(DBEntry.SERVICE_COLUMN_NAME_ACCURACY, accuracy);
         values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped.toString());
+        values.put(DBEntry.SERVICE_COLUMN_NAME_BOOT_STARTUP, onBootStartup.toString());
         long result = db.insert(
                 DBEntry.SERVICE_TABLE_NAME,
                 null,
@@ -316,6 +322,20 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBEntry.SERVICE_COLUMN_NAME_MANUAL_SHUTDOWN, isManuallyStopped.toString());
+        int result = db.update(
+                DBHelper.DBEntry.SERVICE_TABLE_NAME,
+                values,
+                DBHelper.DBEntry._ID + " = ?",
+                new String[]{String.valueOf(1)}
+        );
+        db.close();
+        return result;
+    }
+
+    public long updateOnBootStartupSettings(final Boolean onBootStartup) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBEntry.SERVICE_COLUMN_NAME_BOOT_STARTUP, onBootStartup.toString());
         int result = db.update(
                 DBHelper.DBEntry.SERVICE_TABLE_NAME,
                 values,

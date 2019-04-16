@@ -35,7 +35,7 @@ public class ActivitySettings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule())
+                .appModule(new AppModule(this))
                 .build();
         settingsValidator = appComponent.getSettingsValidator();
         dbHelper = appComponent.getDBHelper();
@@ -44,12 +44,25 @@ public class ActivitySettings extends AppCompatActivity {
 
         final Spinner accuracySpinner = (Spinner) findViewById(R.id.location_accuracy_dropdown);
         final EditText intervalText = (EditText) findViewById(R.id.location_refresh_rate_input);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.accuracy_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accuracySpinner.setAdapter(adapter);
+        final Spinner onBootStartupSpinner = (Spinner) findViewById(R.id.on_boot_startup_dropdown);
 
-        accuracySpinner.setSelection(adapter.getPosition(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY));
+        ArrayAdapter<CharSequence> accuracyAdapter = ArrayAdapter.createFromResource(this,
+                R.array.accuracy_array, android.R.layout.simple_spinner_item);
+        accuracyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accuracySpinner.setAdapter(accuracyAdapter);
+
+        ArrayAdapter<CharSequence> onBootStartupAdapter = ArrayAdapter.createFromResource(this,
+                R.array.on_boot_startup_array, android.R.layout.simple_spinner_item);
+        onBootStartupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        onBootStartupSpinner.setAdapter(onBootStartupAdapter);
+
+        accuracySpinner.setSelection(accuracyAdapter.getPosition(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY));
+        if(AppResources.serviceSettings.WEASLEY_SERVICE_ON_BOOT_STARTUP) {
+            onBootStartupSpinner.setSelection(0);
+        }
+        else {
+            onBootStartupSpinner.setSelection(1);
+        }
         intervalText.setText(String.valueOf(AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_FASTEST_INTERVAL / (60 * 1000)));
 
         final Button serviceButon = (Button) findViewById(R.id.service_button);
@@ -61,11 +74,10 @@ public class ActivitySettings extends AppCompatActivity {
         serviceButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED) {
-                    AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = true;
-                    dbHelper.updateServiceIsManuallyStoppedSettings(true);
+                Boolean manuallyStoppedNewStatus = !AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED;
+                AppResources.serviceSettings.WEASLEY_SERVICE_IF_MANUALLY_STOPPED = manuallyStoppedNewStatus;
+                dbHelper.updateServiceIsManuallyStoppedSettings(manuallyStoppedNewStatus);
 
-                }
                 if (Objects.nonNull(AppResources.isLocationServiceRunning) && AppResources.isLocationServiceRunning) {
                     stopService(AppResources.WEASLEY_SERVICE_INTENT);
                     serviceButon.setText(R.string.start_location_service);
@@ -85,6 +97,7 @@ public class ActivitySettings extends AppCompatActivity {
             public void onClick(View view) {
                 final String inputInterval = intervalText.getText().toString();
                 final String inputAccuracy = accuracySpinner.getSelectedItem().toString();
+                final String inputOnBootStartup = onBootStartupSpinner.getSelectedItem().toString();
                 boolean settingsChanged = false;
                 if (!settingsValidator.ifAllFieldsAreEmpty(inputInterval, inputAccuracy)) {
                     if (!settingsValidator.ifIntervalIsSame(inputInterval)) {
@@ -97,6 +110,11 @@ public class ActivitySettings extends AppCompatActivity {
                         AppResources.serviceSettings.WEASLEY_SERVICE_LOCATION_ACCURACY = inputAccuracy;
                         dbHelper.updateServiceAccuracySettings(inputAccuracy);
                         settingsChanged = true;
+                    }
+                    if(!settingsValidator.ifOnBootStartupIsSame(inputOnBootStartup)) {
+                        Boolean onBootStartup = Boolean.parseBoolean(inputOnBootStartup);
+                        AppResources.serviceSettings.WEASLEY_SERVICE_ON_BOOT_STARTUP = onBootStartup;
+                        dbHelper.updateOnBootStartupSettings(onBootStartup);
                     }
                     if (settingsChanged) {
                         stopService(AppResources.WEASLEY_SERVICE_INTENT);

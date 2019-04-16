@@ -57,7 +57,7 @@ public class ActivityEditRecipient extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule())
+                .appModule(new AppModule(this))
                 .build();
         dbHelper = appComponent.getDBHelper();
         recipientValidator = appComponent.getRecipientValidator();
